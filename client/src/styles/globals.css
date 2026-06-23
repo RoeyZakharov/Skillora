@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #172033;
+    background-color: #f4f7fb;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+.home-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background:
+        linear-gradient(
+            135deg,
+            #f4f7ff,
+            #eefaf5
+        );
+}
+
+.health-card {
+    width: 100%;
+    max-width: 620px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    box-shadow:
+        0 12px 35px
+        rgba(15, 23, 42, 0.12);
+}
+
+.health-card__header {
+    margin-bottom: 36px;
+    text-align: center;
+}
+
+.health-card__header h1 {
+    margin: 0;
+    font-size: 48px;
+    text-shadow:
+        2px 2px 5px
+        rgba(0, 0, 0, 0.15);
+}
+
+.health-card__header p {
+    margin: 8px 0 0;
+    color: #5d6678;
+}
+
+.health-card h2 {
+    margin-bottom: 20px;
+}
+
+.status-message {
+    padding: 18px;
+    background-color: #eef2f7;
+    border-radius: 12px;
+}
+
+.status-box {
+    padding: 22px;
+    border-radius: 12px;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.status-box:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 18px
+        rgba(15, 23, 42, 0.08);
+}
+
+.status-box h3 {
+    margin-top: 0;
+}
+
+.status-box--success {
+    background-color: #e9f8ef;
+    border: 1px solid #7ac99b;
+}
+
+.status-box--error {
+    background-color: #fdecec;
+    border: 1px solid #e58c8c;
+}
+
+.health-list {
+    margin: 20px 0 0;
+}
+
+.health-list div {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid
+        rgba(0, 0, 0, 0.1);
+}
+
+.health-list div:last-child {
+    border-bottom: none;
+}
+
+.health-list dt {
+    font-weight: 600;
+}
+
+.health-list dd {
+    margin: 0;
+    text-align: right;
+    text-transform: capitalize;
+}
+
+@media (max-width: 600px) {
+    .home-page {
+        padding: 16px;
+    }
+
+    .health-card {
+        padding: 24px;
+    }
+
+    .health-card__header h1 {
+        font-size: 38px;
+    }
+
+    .health-list div {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .health-list dd {
+        text-align: left;
+    }
+}
