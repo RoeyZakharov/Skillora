@@ -9,6 +9,8 @@ import {
     notFound,
 } from "./middleware/errorHandler.js";
 
+import userRoutes from "./routes/userRoutes.js";
+
 const app = express();
 
 const clientUrl =
@@ -53,6 +55,7 @@ app.use(
 
 // API routes
 app.use("/api/health", healthRoutes);
+app.use("/api/users", userRoutes);
 
 // Ignore automatic browser favicon requests.
 app.get("/favicon.ico", (req, res) => {

@@ -1,0 +1,111 @@
+.page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background:
+        linear-gradient(
+            135deg,
+            #f4f7ff,
+            #eefaf5
+        );
+}
+
+.formCard {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    box-shadow:
+        0 12px 35px
+        rgba(15, 23, 42, 0.12);
+}
+
+.formCard h1 {
+    margin: 0;
+    text-align: center;
+    text-shadow:
+        1px 1px 3px
+        rgba(0, 0, 0, 0.12);
+}
+
+.subtitle {
+    margin: 10px 0 30px;
+    color: #5d6678;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-weight: 600;
+}
+
+.form input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #bcc5d3;
+    border-radius: 9px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form input:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+.form button {
+    margin-top: 8px;
+    padding: 13px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.form button:hover:not(:disabled) {
+    background-color: #1d6149;
+    transform: translateY(-1px);
+}
+
+.form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.errorMessage {
+    margin-bottom: 20px;
+    padding: 12px;
+    color: #8c1d1d;
+    background-color: #fdecec;
+    border: 1px solid #e58c8c;
+    border-radius: 9px;
+}
+
+.footer {
+    margin: 24px 0 0;
+    text-align: center;
+}
+
+.footer a {
+    color: #26795c;
+    font-weight: 600;
+}
