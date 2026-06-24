@@ -58,17 +58,27 @@ const SkillList = ({
 
 export default function UserCard({
     user,
+    canEdit = false,
+    onEdit,
 }) {
     return (
         <article className={styles.userCard}>
             <header className={styles.userHeader}>
-                <div className={styles.avatar}>
-                    {getInitials(
-                        user.displayName
-                    )}
-                </div>
+                {user.avatarUrl ? (
+                    <img
+                        src={user.avatarUrl}
+                        alt={`${user.displayName} profile`}
+                        className={styles.avatarImage}
+                    />
+                ) : (
+                    <div className={styles.avatar}>
+                        {getInitials(
+                            user.displayName
+                        )}
+                    </div>
+                )}
 
-                <div>
+                <div className={styles.userIdentity}>
                     <h1 className={styles.displayName}>
                         {user.displayName}
                     </h1>
@@ -77,11 +87,22 @@ export default function UserCard({
                         @{user.username}
                     </p>
                 </div>
+
+                {canEdit && (
+                    <button
+                        type="button"
+                        className={styles.editButton}
+                        onClick={onEdit}
+                    >
+                        Edit profile
+                    </button>
+                )}
             </header>
 
             <section className={styles.profileDetails}>
                 <div>
                     <span>City</span>
+
                     <strong>
                         {user.city ||
                             "Not specified"}
@@ -90,6 +111,7 @@ export default function UserCard({
 
                 <div>
                     <span>Member since</span>
+
                     <strong>
                         {formatDate(
                             user.createdAt

@@ -53,22 +53,32 @@ const normalizeAuthenticationError = (
     );
 };
 
-const getAuthorizationHeaders =
-    async (firebaseUser = auth.currentUser) => {
-        if (!firebaseUser) {
-            throw new Error(
-                "The user is not authenticated"
-            );
-        }
+const getAuthorizationHeaders = async (
+    firebaseUser = null,
+    forceRefresh = false
+) => {
+    // Wait until Firebase restores the saved authentication
+    // state after a browser refresh.
+    await auth.authStateReady();
 
-        const idToken =
-            await firebaseUser.getIdToken();
+    const authenticatedUser =
+        firebaseUser || auth.currentUser;
 
-        return {
-            Authorization:
-                `Bearer ${idToken}`,
-        };
+    if (!authenticatedUser) {
+        throw new Error(
+            "The user is not authenticated"
+        );
+    }
+
+    const idToken =
+        await authenticatedUser.getIdToken(
+            forceRefresh
+        );
+
+    return {
+        Authorization: `Bearer ${idToken}`,
     };
+};
 
 export const registerUser = async ({
     email,

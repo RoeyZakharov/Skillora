@@ -197,3 +197,225 @@
         font-size: 28px;
     }
 }
+
+.profileContainer {
+    width: 100%;
+    max-width: 900px;
+}
+
+.userIdentity {
+    flex: 1;
+}
+
+.avatarImage {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #dff4e9;
+}
+
+.editButton {
+    margin-left: auto;
+    padding: 10px 18px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.editButton:hover {
+    background-color: #1d6149;
+    transform: translateY(-1px);
+}
+
+.editCard {
+    width: 100%;
+    max-width: 900px;
+    padding: 36px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow:
+        0 12px 35px
+        rgba(15, 23, 42, 0.12);
+}
+
+.editHeader {
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #dce3eb;
+}
+
+.editHeader h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.editHeader p {
+    margin: 8px 0 0;
+    color: #667085;
+}
+
+.editForm {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.editForm label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-weight: 600;
+}
+
+.editForm input,
+.editForm textarea {
+    width: 100%;
+    padding: 12px 14px;
+    color: #172033;
+    background-color: #ffffff;
+    border: 1px solid #bcc5d3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.editForm textarea {
+    resize: vertical;
+}
+
+.editForm input:focus,
+.editForm textarea:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+.editForm small {
+    color: #667085;
+    font-weight: 400;
+}
+
+.fullWidthField {
+    grid-column: 1 / -1;
+}
+
+.characterCount {
+    align-self: flex-end;
+    color: #667085;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.formActions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 10px;
+}
+
+.cancelButton,
+.saveButton {
+    padding: 11px 20px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cancelButton {
+    color: #344054;
+    background-color: #ffffff;
+    border: 1px solid #bcc5d3;
+}
+
+.saveButton {
+    color: #ffffff;
+    background-color: #26795c;
+    border: 1px solid #26795c;
+}
+
+.cancelButton:hover:not(:disabled),
+.saveButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.cancelButton:hover:not(:disabled) {
+    background-color: #f2f4f7;
+}
+
+.saveButton:hover:not(:disabled) {
+    background-color: #1d6149;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.formError {
+    margin-bottom: 22px;
+    padding: 13px;
+    color: #8c1d1d;
+    background-color: #fdecec;
+    border: 1px solid #e58c8c;
+    border-radius: 9px;
+}
+
+.successMessage {
+    margin-bottom: 18px;
+    padding: 13px;
+    color: #175c3d;
+    background-color: #e9f8ef;
+    border: 1px solid #7ac99b;
+    border-radius: 9px;
+}
+
+@media (max-width: 750px) {
+    .userIdentity {
+        text-align: center;
+    }
+
+    .editButton {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .editCard {
+        padding: 24px;
+    }
+
+    .editForm {
+        grid-template-columns: 1fr;
+    }
+
+    .fullWidthField {
+        grid-column: auto;
+    }
+
+    .formActions {
+        grid-column: auto;
+        flex-direction: column-reverse;
+    }
+
+    .cancelButton,
+    .saveButton {
+        width: 100%;
+    }
+}
