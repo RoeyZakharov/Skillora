@@ -7,8 +7,6 @@ import {
     useState,
 } from "react";
 
-import NavigationBar from "../components/NavigationBar";
-
 import ProtectedPage, {
     useAuthenticatedUser,
 } from "../components/ProtectedPage";
@@ -122,15 +120,7 @@ function HomeContent() {
     };
 
     return (
-        <div className="skillora-app">
-            <NavigationBar
-                currentUser={currentUser}
-                invitationCount={
-                    invitations.length
-                }
-            />
-
-            <main className="skillora-main-layout">
+        <main className="skillora-main-layout">
                 <aside className="skillora-left-column">
                     <section className="skillora-profile-summary">
                         <div className="skillora-profile-cover" />
@@ -348,8 +338,7 @@ function HomeContent() {
                     </section>
                 </aside>
             </main>
-        </div>
-    );
+        );
 }
 
 export default function HomePage() {

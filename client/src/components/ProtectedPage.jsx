@@ -14,6 +14,12 @@ import {
     observeAuthenticationState,
 } from "../services/userService";
 
+import NavigationBar from "./NavigationBar";
+
+import {
+    getMyGroupInvitations,
+} from "../services/groupService";
+
 const AuthenticatedUserContext =
     createContext(null);
 
@@ -47,6 +53,11 @@ export default function ProtectedPage({
     ] = useState(null);
 
     const [
+        invitationCount,
+        setInvitationCount,
+    ] = useState(0)
+
+    const [
         errorMessage,
         setErrorMessage,
     ] = useState("");
@@ -63,6 +74,7 @@ export default function ProtectedPage({
                         }
 
                         setCurrentUser(null);
+                        setInvitationCount(0);
                         setIsCheckingAuthentication(
                             false
                         );
@@ -74,6 +86,18 @@ export default function ProtectedPage({
                     try {
                         const skilloraUser =
                             await getCurrentUserProfile();
+                        
+                        let invitations = [];
+
+                        try {
+                            invitations =
+                                await getMyGroupInvitations();
+                        } catch (error) {
+                            console.error(
+                                "Could not load invitation count:",
+                                error
+                            );
+                        }
 
                         if (!isMounted) {
                             return;
@@ -81,6 +105,10 @@ export default function ProtectedPage({
 
                         setCurrentUser(
                             skilloraUser
+                        );
+
+                        setInvitationCount(
+                            invitations.length
                         );
 
                         setErrorMessage("");
@@ -137,9 +165,20 @@ export default function ProtectedPage({
             value={{
                 currentUser,
                 setCurrentUser,
+                invitationCount,
+                setInvitationCount,
             }}
         >
-            {children}
+            <div className="skillora-app">
+                <NavigationBar
+                    currentUser={currentUser}
+                    invitationCount={
+                        invitationCount
+                    }
+                />
+
+                {children}
+            </div>
         </AuthenticatedUserContext.Provider>
     );
 }
