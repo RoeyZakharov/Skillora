@@ -605,9 +605,9 @@
 
 .groupDetailCard {
     width: 100%;
-    max-width: 950px;
+    max-width: 1240px;
     margin: 0 auto;
-    padding: 36px;
+    padding: 28px;
     background-color: #ffffff;
     border-radius: 20px;
     box-shadow:
@@ -1322,4 +1322,192 @@
     margin: 28px auto;
     padding: 32px;
     text-align: center;
+}
+
+.groupPostsSection {
+    margin-top: 32px;
+    padding-top: 26px;
+    border-top: 1px solid #dce3eb;
+}
+
+.groupPostsSection h2 {
+    margin: 0 0 18px;
+}
+
+.groupPostsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.noGroupPosts {
+    padding: 24px;
+    color: #667085;
+    background-color: #f7f9fc;
+    border: 1px solid #dce3eb;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.groupWorkspace {
+    display: grid;
+    grid-template-columns:
+        240px
+        minmax(420px, 1fr)
+        300px;
+    align-items: start;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.groupInfoSidebar,
+.groupFeedColumn,
+.groupActionSidebar {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.groupInfoSidebar > section,
+.groupInfoSidebar > dl,
+.groupFeedColumn > section,
+.groupActionSidebar > section {
+    margin: 0;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.groupFeedColumn .groupPostsSection {
+    margin: 0;
+    padding: 20px;
+    border: 1px solid #d0d5dd;
+}
+
+.groupActionSidebar .membershipSection,
+.groupActionSidebar .groupInvitationSection,
+.groupActionSidebar .groupMembersSection,
+.groupActionSidebar .managerRequestsSection {
+    margin: 0;
+    padding: 20px;
+    border-top: none;
+}
+
+@media (max-width: 1050px) {
+    .groupWorkspace {
+        grid-template-columns:
+            minmax(210px, 250px)
+            minmax(0, 1fr);
+    }
+
+    .groupActionSidebar {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 750px) {
+    .groupWorkspace {
+        grid-template-columns: 1fr;
+    }
+
+    .groupActionSidebar {
+        grid-column: auto;
+        display: flex;
+    }
+}
+
+.groupActionSidebar {
+    gap: 12px;
+}
+
+.groupActionSidebar > section {
+    padding: 16px;
+    box-shadow:
+        0 2px 8px
+        rgba(15, 23, 42, 0.05);
+}
+
+.groupActionSidebar h2 {
+    margin: 0 0 14px;
+    font-size: 20px;
+}
+
+.groupActionSidebar .approvedMessage,
+.groupActionSidebar .pendingMessage,
+.groupActionSidebar .rejectedMembership {
+    margin: 0;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.groupActionSidebar .membersList {
+    gap: 10px;
+}
+
+.groupActionSidebar .memberRow {
+    gap: 10px;
+    padding: 12px;
+    background-color: #f8fafc;
+    border: 1px solid #e3e8ef;
+    border-radius: 9px;
+}
+
+.groupActionSidebar .memberIdentity {
+    min-width: 0;
+}
+
+.groupActionSidebar .memberIdentity a {
+    font-size: 14px;
+}
+
+.groupActionSidebar .memberIdentity span {
+    font-size: 13px;
+}
+
+.groupActionSidebar .memberRole {
+    flex-shrink: 0;
+    padding: 5px 9px;
+    font-size: 12px;
+}
+
+.groupCreatePostSection {
+    padding: 16px !important;
+}
+
+.groupStartPostButton {
+    width: 100%;
+    padding: 13px 18px;
+    color: #667085;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 28px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    font-weight: 600;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.groupStartPostButton:hover {
+    color: #175c3d;
+    background-color: #f8faf9;
+    border-color: #26795c;
+}
+
+.groupPostSuccess {
+    margin-top: 14px;
+    padding: 12px;
+    color: #175c3d;
+    background-color: #e9f8ef;
+    border: 1px solid #7ac99b;
+    border-radius: 8px;
 }

@@ -3,6 +3,7 @@ import express from "express";
 import {
     createPost,
     getFeedPosts,
+    getGroupPosts,
 } from "../controllers/postController.js";
 
 import {
@@ -25,6 +26,11 @@ router.use(requireSkilloraUser);
 router.get(
     "/feed",
     getFeedPosts
+);
+
+router.get(
+    "/group/:groupId",
+    getGroupPosts
 );
 
 router.post(

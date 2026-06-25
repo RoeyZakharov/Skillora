@@ -44,3 +44,23 @@ export const getFeedPosts = async () => {
 
     return response.data.posts || [];
 };
+
+export const getGroupPosts = async (
+    groupId
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                `/api/posts/group/${encodeURIComponent(
+                    groupId
+                )}`,
+
+            method: "GET",
+            headers,
+        });
+
+    return response.data.posts || [];
+};

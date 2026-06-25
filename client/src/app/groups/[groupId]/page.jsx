@@ -13,6 +13,9 @@ import {
 } from "next/navigation";
 
 import ProtectedPage from "../../../components/ProtectedPage";
+import GroupForm from "../../../components/GroupForm";
+import PostCard from "../../../components/PostCard";
+import PostForm from "../../../components/PostForm";
 
 import {
     deleteGroup,
@@ -23,7 +26,10 @@ import {
     updateGroup,
 } from "../../../services/groupService";
 
-import GroupForm from "../../../components/GroupForm";
+import {
+    getGroupPosts,
+} from "../../../services/postService";
+
 import styles from "../../../styles/cards.module.css";
 
 const formatDate = (dateValue) => {
@@ -41,9 +47,7 @@ const formatDate = (dateValue) => {
 };
 
 export default function GroupDetailsPage() {
-
     const params = useParams();
-
     const router = useRouter();
 
     const groupId =
@@ -57,14 +61,18 @@ export default function GroupDetailsPage() {
     const [isLoading, setIsLoading] =
         useState(true);
 
-    const [errorMessage, setErrorMessage] = 
-        useState("");
+    const [
+        errorMessage,
+        setErrorMessage,
+    ] = useState("");
 
     const [isJoining, setIsJoining] =
         useState(false);
 
-    const [reviewingUserId, setReviewingUserId] =
-        useState("");
+    const [
+        reviewingUserId,
+        setReviewingUserId,
+    ] = useState("");
 
     const [isEditing, setIsEditing] =
         useState(false);
@@ -75,29 +83,70 @@ export default function GroupDetailsPage() {
     const [isDeleting, setIsDeleting] =
         useState(false);
 
-    const [managerMessage, setManagerMessage] =
-        useState("");
+    const [
+        managerMessage,
+        setManagerMessage,
+    ] = useState("");
 
-    const [managerError, setManagerError] =
-        useState("");
+    const [
+        managerError,
+        setManagerError,
+    ] = useState("");
 
-    const [actionMessage, setActionMessage] = 
-        useState("");
+    const [
+        actionMessage,
+        setActionMessage,
+    ] = useState("");
 
-    const [actionError, setActionError] = 
-        useState("");
-    
-    const [inviteUsername, setInviteUsername] =
-        useState("");
+    const [
+        actionError,
+        setActionError,
+    ] = useState("");
 
-    const [isInviting, setIsInviting] =
-        useState(false);
+    const [
+        inviteUsername,
+        setInviteUsername,
+    ] = useState("");
 
-    const [inviteMessage, setInviteMessage] =
-        useState("");
+    const [
+        isInviting,
+        setIsInviting,
+    ] = useState(false);
 
-    const [inviteError, setInviteError] =
-        useState("");
+    const [
+        inviteMessage,
+        setInviteMessage,
+    ] = useState("");
+
+    const [
+        inviteError,
+        setInviteError,
+    ] = useState("");
+
+    const [
+        groupPosts,
+        setGroupPosts,
+    ] = useState([]);
+
+    const [
+        isLoadingGroupPosts,
+        setIsLoadingGroupPosts,
+    ] = useState(false);
+
+    const [
+        groupPostsError,
+        setGroupPostsError,
+    ] = useState("");
+
+    const [
+        isGroupPostFormOpen,
+        setIsGroupPostFormOpen,
+    ] = useState(false);
+
+    const [
+        groupPostSuccess,
+        setGroupPostSuccess,
+    ] = useState("");
 
     useEffect(() => {
         let isMounted = true;
@@ -150,6 +199,63 @@ export default function GroupDetailsPage() {
         };
     }, [groupId]);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        const isApprovedMember =
+            group?.membership?.status ===
+            "approved";
+
+        if (!isApprovedMember) {
+            setGroupPosts([]);
+            setGroupPostsError("");
+            setIsLoadingGroupPosts(false);
+
+            return () => {
+                isMounted = false;
+            };
+        }
+
+        const loadGroupPosts =
+            async () => {
+                setIsLoadingGroupPosts(true);
+                setGroupPostsError("");
+
+                try {
+                    const posts =
+                        await getGroupPosts(
+                            groupId
+                        );
+
+                    if (isMounted) {
+                        setGroupPosts(posts);
+                    }
+                } catch (error) {
+                    if (isMounted) {
+                        setGroupPostsError(
+                            error.message ||
+                                "Could not load group posts."
+                        );
+                    }
+                } finally {
+                    if (isMounted) {
+                        setIsLoadingGroupPosts(
+                            false
+                        );
+                    }
+                }
+            };
+
+        loadGroupPosts();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [
+        groupId,
+        group?.membership?.status,
+    ]);
+
     const handleJoinRequest = async () => {
         setIsJoining(true);
         setActionMessage("");
@@ -176,37 +282,40 @@ export default function GroupDetailsPage() {
         }
     };
 
-    const handleMembershipDecision = async (userId, decision) => {
-        setReviewingUserId(userId);
-        setActionMessage("");
-        setActionError("");
+    const handleMembershipDecision =
+        async (userId, decision) => {
+            setReviewingUserId(userId);
+            setActionMessage("");
+            setActionError("");
 
-        try {
-            const updatedGroup =
-                await reviewMembershipRequest(
-                    groupId,
-                    userId,
-                    decision
+            try {
+                const updatedGroup =
+                    await reviewMembershipRequest(
+                        groupId,
+                        userId,
+                        decision
+                    );
+
+                setGroup(updatedGroup);
+
+                setActionMessage(
+                    decision === "approve"
+                        ? "Membership request approved."
+                        : "Membership request rejected."
                 );
+            } catch (error) {
+                setActionError(
+                    error.message ||
+                        "Could not update the membership request."
+                );
+            } finally {
+                setReviewingUserId("");
+            }
+        };
 
-            setGroup(updatedGroup);
-
-            setActionMessage(
-                decision === "approve"
-                    ? "Membership request approved."
-                    : "Membership request rejected."
-            );
-        } catch (error) {
-            setActionError(
-                error.message ||
-                    "Could not update the membership request."
-            );
-        } finally {
-            setReviewingUserId("");
-        }
-    };
-
-    const handleUpdateGroup = async (groupData) => {
+    const handleUpdateGroup = async (
+        groupData
+    ) => {
         setIsSaving(true);
         setManagerMessage("");
         setManagerError("");
@@ -240,26 +349,26 @@ export default function GroupDetailsPage() {
                 "Are you sure you want to permanently delete this group?"
             );
 
-            if (!shouldDelete) {
-                return;
-            }
+        if (!shouldDelete) {
+            return;
+        }
 
-            setIsDeleting(true);
-            setManagerMessage("");
-            setManagerError("");
+        setIsDeleting(true);
+        setManagerMessage("");
+        setManagerError("");
 
-            try {
-                await deleteGroup(groupId);
+        try {
+            await deleteGroup(groupId);
 
-                router.push("/groups");
-            } catch (error) {
-                setManagerError(
-                    error.message ||
-                        "Could not delete the group."
-                );
+            router.push("/groups");
+        } catch (error) {
+            setManagerError(
+                error.message ||
+                    "Could not delete the group."
+            );
 
-                setIsDeleting(false);
-            }
+            setIsDeleting(false);
+        }
     };
 
     const handleInviteUser = async (
@@ -305,7 +414,23 @@ export default function GroupDetailsPage() {
         }
     };
 
-    const approvedMembers = group?.members || [];
+    const approvedMembers =
+        group?.members || [];
+
+    const handleGroupPostCreated = (
+        newPost
+    ) => {
+        setGroupPosts((currentPosts) => [
+            newPost,
+            ...currentPosts,
+        ]);
+
+        setIsGroupPostFormOpen(false);
+
+        setGroupPostSuccess(
+            "Your group post was published successfully."
+        );
+    };
 
     return (
         <ProtectedPage>
@@ -412,9 +537,17 @@ export default function GroupDetailsPage() {
                                                 styles.groupEditButton
                                             }
                                             onClick={() => {
-                                                setIsEditing(true);
-                                                setManagerError("");
-                                                setManagerMessage("");
+                                                setIsEditing(
+                                                    true
+                                                );
+
+                                                setManagerError(
+                                                    ""
+                                                );
+
+                                                setManagerMessage(
+                                                    ""
+                                                );
                                             }}
                                             disabled={
                                                 isSaving ||
@@ -465,531 +598,788 @@ export default function GroupDetailsPage() {
                                 </div>
                             )}
 
-                            {group.canManage && isEditing && (
-                                <section
-                                    className={
-                                        styles.groupEditSection
-                                    }
-                                >
-                                    <h2>Edit group</h2>
-
-                                    <GroupForm
-                                        initialGroup={group}
-                                        onSubmit={
-                                            handleUpdateGroup
-                                        }
-                                        onCancel={() => {
-                                            setIsEditing(false);
-                                            setManagerError("");
-                                        }}
-                                        isSubmitting={isSaving}
-                                        errorMessage={
-                                            managerError
-                                        }
-                                        submitText="Save changes"
-                                    />
-                                </section>
-                            )}
-
-                            <section
-                                className={
-                                    styles.groupAbout
-                                }
-                            >
-                                <h2>
-                                    About this group
-                                </h2>
-
-                                <p>
-                                    {
-                                        group.description
-                                    }
-                                </p>
-                            </section>
-
-                            <dl
-                                className={
-                                    styles.groupDetailInformation
-                                }
-                            >
-                                <div>
-                                    <dt>
-                                        Manager
-                                    </dt>
-
-                                    <dd>
-                                        {group.admin
-                                            ?.username ? (
-                                            <Link
-                                                href={`/profile/${group.admin.username}`}
-                                            >
-                                                {
-                                                    group
-                                                        .admin
-                                                        .displayName
-                                                }
-                                            </Link>
-                                        ) : (
-                                            "Unknown"
-                                        )}
-                                    </dd>
-                                </div>
-
-                                <div>
-                                    <dt>
-                                        Members
-                                    </dt>
-
-                                    <dd>
-                                        {
-                                            group.memberCount
-                                        }
-                                    </dd>
-                                </div>
-
-                                <div>
-                                    <dt>
-                                        Format
-                                    </dt>
-
-                                    <dd>
-                                        {group.isOnline
-                                            ? "Online"
-                                            : "In person"}
-                                    </dd>
-                                </div>
-
-                                <div>
-                                    <dt>
-                                        City
-                                    </dt>
-
-                                    <dd>
-                                        {group.city ||
-                                            "Not specified"}
-                                    </dd>
-                                </div>
-
-                                <div>
-                                    <dt>
-                                        Created
-                                    </dt>
-
-                                    <dd>
-                                        {formatDate(
-                                            group.createdAt
-                                        )}
-                                    </dd>
-                                </div>
-                            </dl>
-
-                            {group.tags?.length >
-                                0 && (
-                                <section
-                                    className={
-                                        styles.groupTagsSection
-                                    }
-                                >
-                                    <h2>
-                                        Topics
-                                    </h2>
-
-                                    <ul
+                            {group.canManage &&
+                                isEditing && (
+                                    <section
                                         className={
-                                            styles.tagList
+                                            styles.groupEditSection
                                         }
                                     >
-                                        {group.tags.map(
-                                            (tag) => (
-                                                <li
-                                                    key={
+                                        <h2>
+                                            Edit group
+                                        </h2>
+
+                                        <GroupForm
+                                            initialGroup={
+                                                group
+                                            }
+                                            onSubmit={
+                                                handleUpdateGroup
+                                            }
+                                            onCancel={() => {
+                                                setIsEditing(
+                                                    false
+                                                );
+
+                                                setManagerError(
+                                                    ""
+                                                );
+                                            }}
+                                            isSubmitting={
+                                                isSaving
+                                            }
+                                            errorMessage={
+                                                managerError
+                                            }
+                                            submitText="Save changes"
+                                        />
+                                    </section>
+                                )}
+
+                            <div
+                                className={
+                                    styles.groupWorkspace
+                                }
+                            >
+                                <aside
+                                    className={
+                                        styles.groupInfoSidebar
+                                    }
+                                >
+                                    <section
+                                        className={
+                                            styles.groupAbout
+                                        }
+                                    >
+                                        <h2>
+                                            About this group
+                                        </h2>
+
+                                        <p>
+                                            {
+                                                group.description
+                                            }
+                                        </p>
+                                    </section>
+
+                                    <dl
+                                        className={
+                                            styles.groupDetailInformation
+                                        }
+                                    >
+                                        <div>
+                                            <dt>
+                                                Manager
+                                            </dt>
+
+                                            <dd>
+                                                {group.admin
+                                                    ?.username ? (
+                                                    <Link
+                                                        href={`/profile/${group.admin.username}`}
+                                                    >
+                                                        {
+                                                            group
+                                                                .admin
+                                                                .displayName
+                                                        }
+                                                    </Link>
+                                                ) : (
+                                                    "Unknown"
+                                                )}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>
+                                                Members
+                                            </dt>
+
+                                            <dd>
+                                                {
+                                                    group.memberCount
+                                                }
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>
+                                                Format
+                                            </dt>
+
+                                            <dd>
+                                                {group.isOnline
+                                                    ? "Online"
+                                                    : "In person"}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>
+                                                City
+                                            </dt>
+
+                                            <dd>
+                                                {group.city ||
+                                                    "Not specified"}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>
+                                                Created
+                                            </dt>
+
+                                            <dd>
+                                                {formatDate(
+                                                    group.createdAt
+                                                )}
+                                            </dd>
+                                        </div>
+                                    </dl>
+
+                                    {group.tags?.length >
+                                        0 && (
+                                        <section
+                                            className={
+                                                styles.groupTagsSection
+                                            }
+                                        >
+                                            <h2>
+                                                Topics
+                                            </h2>
+
+                                            <ul
+                                                className={
+                                                    styles.tagList
+                                                }
+                                            >
+                                                {group.tags.map(
+                                                    (
                                                         tag
+                                                    ) => (
+                                                        <li
+                                                            key={
+                                                                tag
+                                                            }
+                                                        >
+                                                            {
+                                                                tag
+                                                            }
+                                                        </li>
+                                                    )
+                                                )}
+                                            </ul>
+                                        </section>
+                                    )}
+                                </aside>
+
+                                <section
+                                    className={
+                                        styles.groupFeedColumn
+                                    }
+                                >
+
+                                    {group.membership?.status ===
+                                        "approved" && (
+                                        <section
+                                            className={
+                                                styles.groupCreatePostSection
+                                            }
+                                        >
+                                            {!isGroupPostFormOpen && (
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        styles.groupStartPostButton
+                                                    }
+                                                    onClick={() => {
+                                                        setIsGroupPostFormOpen(
+                                                            true
+                                                        );
+
+                                                        setGroupPostSuccess(
+                                                            ""
+                                                        );
+                                                    }}
+                                                >
+                                                    Start a group post
+                                                </button>
+                                            )}
+
+                                            {isGroupPostFormOpen && (
+                                                <PostForm
+                                                    groupId={groupId}
+                                                    onPostCreated={
+                                                        handleGroupPostCreated
+                                                    }
+                                                    onCancel={() =>
+                                                        setIsGroupPostFormOpen(
+                                                            false
+                                                        )
+                                                    }
+                                                />
+                                            )}
+
+                                            {groupPostSuccess && (
+                                                <div
+                                                    className={
+                                                        styles.groupPostSuccess
+                                                    }
+                                                >
+                                                    {groupPostSuccess}
+                                                </div>
+                                            )}
+                                        </section>
+                                    )}
+
+                                    {group.membership
+                                        ?.status ===
+                                        "approved" && (
+                                        <section
+                                            className={
+                                                styles.groupPostsSection
+                                            }
+                                        >
+                                            <h2>
+                                                Group posts
+                                            </h2>
+
+                                            {isLoadingGroupPosts && (
+                                                <div
+                                                    className={
+                                                        styles.stateMessage
+                                                    }
+                                                >
+                                                    Loading group posts...
+                                                </div>
+                                            )}
+
+                                            {groupPostsError && (
+                                                <div
+                                                    className={
+                                                        styles.actionError
                                                     }
                                                 >
                                                     {
-                                                        tag
+                                                        groupPostsError
                                                     }
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-                                </section>
-                            )}
-                            <section
-                                className={
-                                    styles.membershipSection
-                                }
-                            >
-                                <h2>Membership</h2>
+                                                </div>
+                                            )}
 
-                                {actionMessage && (
-                                    <div
-                                        className={
-                                            styles.actionSuccess
-                                        }
-                                    >
-                                        {actionMessage}
-                                    </div>
-                                )}
+                                            {!isLoadingGroupPosts &&
+                                                !groupPostsError &&
+                                                groupPosts.length ===
+                                                    0 && (
+                                                    <div
+                                                        className={
+                                                            styles.noGroupPosts
+                                                        }
+                                                    >
+                                                        No posts have been
+                                                        published in this
+                                                        group yet.
+                                                    </div>
+                                                )}
 
-                                {actionError && (
-                                    <div
-                                        className={
-                                            styles.actionError
-                                        }
-                                    >
-                                        {actionError}
-                                    </div>
-                                )}
+                                            {!isLoadingGroupPosts &&
+                                                !groupPostsError &&
+                                                groupPosts.length >
+                                                    0 && (
+                                                    <div
+                                                        className={
+                                                            styles.groupPostsList
+                                                        }
+                                                    >
+                                                        {groupPosts.map(
+                                                            (
+                                                                post
+                                                            ) => (
+                                                                <PostCard
+                                                                    key={
+                                                                        post._id
+                                                                    }
+                                                                    post={
+                                                                        post
+                                                                    }
+                                                                />
+                                                            )
+                                                        )}
+                                                    </div>
+                                                )}
+                                        </section>
+                                    )}
 
-                                {!group.membership && (
-                                    <button
-                                        type="button"
-                                        className={
-                                            styles.primaryButton
-                                        }
-                                        onClick={
-                                            handleJoinRequest
-                                        }
-                                        disabled={isJoining}
-                                    >
-                                        {isJoining
-                                            ? "Sending request..."
-                                            : "Request to join"}
-                                    </button>
-                                )}
-                                {group.membership?.status ===
-                                    "invited" && (
-                                    <div>
-                                        <p>
-                                            A group member invited you
-                                            to this private group.
-                                        </p>
-
-                                        <button
-                                            type="button"
-                                            onClick={
-                                                handleJoinRequest
-                                            }
-                                            disabled={isJoining}
-                                        >
-                                            {isJoining
-                                                ? "Sending request..."
-                                                : "Request to join"}
-                                        </button>
-                                    </div>
-                                )}
-                                {group.membership?.status ===
-                                    "pending" && (
-                                    <div
-                                        className={
-                                            styles.pendingMessage
-                                        }
-                                    >
-                                        Your membership request is
-                                        waiting for manager approval.
-                                    </div>
-                                )}
-
-                                {group.membership?.status ===
-                                    "approved" && (
-                                    <div
-                                        className={
-                                            styles.approvedMessage
-                                        }
-                                    >
-                                        You are a member of this group.
-                                    </div>
-                                )}
-
-                                {group.membership?.status ===
-                                    "rejected" && (
-                                    <div
-                                        className={
-                                            styles.rejectedMembership
-                                        }
-                                    >
-                                        <p>
-                                            Your previous membership
-                                            request was rejected.
-                                        </p>
-
-                                        <button
-                                            type="button"
+                                    {group.membership
+                                        ?.status !==
+                                        "approved" && (
+                                        <section
                                             className={
-                                                styles.primaryButton
+                                                styles.groupPostsSection
                                             }
-                                            onClick={
-                                                handleJoinRequest
-                                            }
-                                            disabled={isJoining}
                                         >
-                                            {isJoining
-                                                ? "Sending request..."
-                                                : "Request again"}
-                                        </button>
-                                    </div>
-                                )}
-                            </section>
-                            {group.canInvite && (
-                                <section
+                                            <h2>
+                                                Group posts
+                                            </h2>
+
+                                            <div
+                                                className={
+                                                    styles.noGroupPosts
+                                                }
+                                            >
+                                                Only approved members
+                                                can view this
+                                                group&apos;s posts.
+                                            </div>
+                                        </section>
+                                    )}
+                                </section>
+
+                                <aside
                                     className={
-                                        styles.groupInvitationSection
+                                        styles.groupActionSidebar
                                     }
                                 >
-                                    <h2>Invite a friend</h2>
-
-                                    <p>
-                                        Invite an existing Skillora
-                                        user to this private group.
-                                    </p>
-
-                                    <form
+                                    <section
                                         className={
-                                            styles.groupInvitationForm
-                                        }
-                                        onSubmit={
-                                            handleInviteUser
+                                            styles.membershipSection
                                         }
                                     >
-                                        <input
-                                            type="text"
-                                            value={inviteUsername}
-                                            onChange={(event) => {
-                                                setInviteUsername(
-                                                    event.target.value
-                                                );
+                                        <h2>
+                                            Membership
+                                        </h2>
 
-                                                setInviteError("");
-                                                setInviteMessage("");
-                                            }}
-                                            placeholder="Enter username"
-                                            aria-label="Username to invite"
-                                            disabled={isInviting}
-                                        />
+                                        {actionMessage && (
+                                            <div
+                                                className={
+                                                    styles.actionSuccess
+                                                }
+                                            >
+                                                {
+                                                    actionMessage
+                                                }
+                                            </div>
+                                        )}
 
-                                        <button
-                                            type="submit"
-                                            disabled={
-                                                isInviting ||
-                                                !inviteUsername.trim()
-                                            }
-                                        >
-                                            {isInviting
-                                                ? "Sending..."
-                                                : "Send invitation"}
-                                        </button>
-                                    </form>
+                                        {actionError && (
+                                            <div
+                                                className={
+                                                    styles.actionError
+                                                }
+                                            >
+                                                {
+                                                    actionError
+                                                }
+                                            </div>
+                                        )}
 
-                                    {inviteMessage && (
-                                        <div
-                                            className={
-                                                styles.invitationSuccess
-                                            }
-                                        >
-                                            {inviteMessage}
-                                        </div>
-                                    )}
+                                        {!group.membership && (
+                                            <button
+                                                type="button"
+                                                className={
+                                                    styles.primaryButton
+                                                }
+                                                onClick={
+                                                    handleJoinRequest
+                                                }
+                                                disabled={
+                                                    isJoining
+                                                }
+                                            >
+                                                {isJoining
+                                                    ? "Sending request..."
+                                                    : "Request to join"}
+                                            </button>
+                                        )}
 
-                                    {inviteError && (
-                                        <div
-                                            className={
-                                                styles.invitationError
-                                            }
-                                        >
-                                            {inviteError}
-                                        </div>
-                                    )}
-                                </section>
-                            )}
-                            <section
-                                className={
-                                    styles.groupMembersSection
-                                }
-                            >
-                                <h2>Group members</h2>
+                                        {group.membership
+                                            ?.status ===
+                                            "invited" && (
+                                            <div>
+                                                <p>
+                                                    A group member
+                                                    invited you to this
+                                                    private group.
+                                                </p>
 
-                                {approvedMembers.length > 0 ? (
-                                    <div
-                                        className={
-                                            styles.membersList
-                                        }
-                                    >
-                                        {approvedMembers.map(
-                                            (member) => (
-                                                <div
-                                                    key={
-                                                        member.user._id
-                                                    }
+                                                <button
+                                                    type="button"
                                                     className={
-                                                        styles.memberRow
+                                                        styles.primaryButton
+                                                    }
+                                                    onClick={
+                                                        handleJoinRequest
+                                                    }
+                                                    disabled={
+                                                        isJoining
                                                     }
                                                 >
-                                                    <div
-                                                        className={
-                                                            styles.memberIdentity
-                                                        }
-                                                    >
-                                                        <Link
-                                                            href={`/profile/${member.user.username}`}
-                                                        >
-                                                            {
-                                                                member
-                                                                    .user
-                                                                    .displayName
-                                                            }
-                                                        </Link>
-
-                                                        <span>
-                                                            @
-                                                            {
-                                                                member
-                                                                    .user
-                                                                    .username
-                                                            }
-                                                        </span>
-                                                    </div>
-
-                                                    <span
-                                                        className={
-                                                            styles.memberRole
-                                                        }
-                                                    >
-                                                        {member.role}
-                                                    </span>
-                                                </div>
-                                            )
+                                                    {isJoining
+                                                        ? "Sending request..."
+                                                        : "Request to join"}
+                                                </button>
+                                            </div>
                                         )}
-                                    </div>
-                                ) : (
-                                    <p
-                                        className={
-                                            styles.noMembersMessage
-                                        }
-                                    >
-                                        This group has no approved
-                                        members.
-                                    </p>
-                                )}
-                            </section>
-                            {group.canManage && (
-                                <section
-                                    className={
-                                        styles.managerRequestsSection
-                                    }
-                                >
-                                    <h2>Pending membership requests</h2>
 
-                                    {group.pendingRequests
-                                        ?.length > 0 ? (
-                                        <div
+                                        {group.membership
+                                            ?.status ===
+                                            "pending" && (
+                                            <div
+                                                className={
+                                                    styles.pendingMessage
+                                                }
+                                            >
+                                                Your membership request
+                                                is waiting for manager
+                                                approval.
+                                            </div>
+                                        )}
+
+                                        {group.membership
+                                            ?.status ===
+                                            "approved" && (
+                                            <div
+                                                className={
+                                                    styles.approvedMessage
+                                                }
+                                            >
+                                                You are a member of this
+                                                group.
+                                            </div>
+                                        )}
+
+                                        {group.membership
+                                            ?.status ===
+                                            "rejected" && (
+                                            <div
+                                                className={
+                                                    styles.rejectedMembership
+                                                }
+                                            >
+                                                <p>
+                                                    Your previous
+                                                    membership request was
+                                                    rejected.
+                                                </p>
+
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        styles.primaryButton
+                                                    }
+                                                    onClick={
+                                                        handleJoinRequest
+                                                    }
+                                                    disabled={
+                                                        isJoining
+                                                    }
+                                                >
+                                                    {isJoining
+                                                        ? "Sending request..."
+                                                        : "Request again"}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </section>
+
+                                    {group.canInvite && (
+                                        <section
                                             className={
-                                                styles.requestList
+                                                styles.groupInvitationSection
                                             }
                                         >
-                                            {group.pendingRequests.map(
-                                                (request) => (
-                                                    <div
-                                                        key={
-                                                            request.user._id
-                                                        }
-                                                        className={
-                                                            styles.requestRow
-                                                        }
-                                                    >
+                                            <h2>
+                                                Invite a friend
+                                            </h2>
+
+                                            <p>
+                                                Invite an existing
+                                                Skillora user to this
+                                                private group.
+                                            </p>
+
+                                            <form
+                                                className={
+                                                    styles.groupInvitationForm
+                                                }
+                                                onSubmit={
+                                                    handleInviteUser
+                                                }
+                                            >
+                                                <input
+                                                    type="text"
+                                                    value={
+                                                        inviteUsername
+                                                    }
+                                                    onChange={(
+                                                        event
+                                                    ) => {
+                                                        setInviteUsername(
+                                                            event
+                                                                .target
+                                                                .value
+                                                        );
+
+                                                        setInviteError(
+                                                            ""
+                                                        );
+
+                                                        setInviteMessage(
+                                                            ""
+                                                        );
+                                                    }}
+                                                    placeholder="Enter username"
+                                                    aria-label="Username to invite"
+                                                    disabled={
+                                                        isInviting
+                                                    }
+                                                />
+
+                                                <button
+                                                    type="submit"
+                                                    disabled={
+                                                        isInviting ||
+                                                        !inviteUsername.trim()
+                                                    }
+                                                >
+                                                    {isInviting
+                                                        ? "Sending..."
+                                                        : "Send invitation"}
+                                                </button>
+                                            </form>
+
+                                            {inviteMessage && (
+                                                <div
+                                                    className={
+                                                        styles.invitationSuccess
+                                                    }
+                                                >
+                                                    {
+                                                        inviteMessage
+                                                    }
+                                                </div>
+                                            )}
+
+                                            {inviteError && (
+                                                <div
+                                                    className={
+                                                        styles.invitationError
+                                                    }
+                                                >
+                                                    {
+                                                        inviteError
+                                                    }
+                                                </div>
+                                            )}
+                                        </section>
+                                    )}
+
+                                    <section
+                                        className={
+                                            styles.groupMembersSection
+                                        }
+                                    >
+                                        <h2>
+                                            Group members
+                                        </h2>
+
+                                        {approvedMembers.length >
+                                        0 ? (
+                                            <div
+                                                className={
+                                                    styles.membersList
+                                                }
+                                            >
+                                                {approvedMembers.map(
+                                                    (
+                                                        member
+                                                    ) => (
                                                         <div
+                                                            key={
+                                                                member
+                                                                    .user
+                                                                    ._id
+                                                            }
                                                             className={
-                                                                styles.requestUser
+                                                                styles.memberRow
                                                             }
                                                         >
-                                                            <Link
-                                                                href={`/profile/${request.user.username}`}
+                                                            <div
+                                                                className={
+                                                                    styles.memberIdentity
+                                                                }
+                                                            >
+                                                                <Link
+                                                                    href={`/profile/${member.user.username}`}
+                                                                >
+                                                                    {
+                                                                        member
+                                                                            .user
+                                                                            .displayName
+                                                                    }
+                                                                </Link>
+
+                                                                <span>
+                                                                    @
+                                                                    {
+                                                                        member
+                                                                            .user
+                                                                            .username
+                                                                    }
+                                                                </span>
+                                                            </div>
+
+                                                            <span
+                                                                className={
+                                                                    styles.memberRole
+                                                                }
                                                             >
                                                                 {
-                                                                    request
-                                                                        .user
-                                                                        .displayName
-                                                                }
-                                                            </Link>
-
-                                                            <span>
-                                                                @
-                                                                {
-                                                                    request
-                                                                        .user
-                                                                        .username
+                                                                    member.role
                                                                 }
                                                             </span>
                                                         </div>
+                                                    )
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <p
+                                                className={
+                                                    styles.noMembersMessage
+                                                }
+                                            >
+                                                This group has no
+                                                approved members.
+                                            </p>
+                                        )}
+                                    </section>
 
-                                                        <div
-                                                            className={
-                                                                styles.requestActions
-                                                            }
-                                                        >
-                                                            <button
-                                                                type="button"
-                                                                className={
-                                                                    styles.approveButton
-                                                                }
-                                                                onClick={() =>
-                                                                    handleMembershipDecision(
-                                                                        request
-                                                                            .user
-                                                                            ._id,
-                                                                        "approve"
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    Boolean(
-                                                                        reviewingUserId
-                                                                    )
-                                                                }
-                                                            >
-                                                                {reviewingUserId ===
-                                                                request.user._id
-                                                                    ? "Processing..."
-                                                                    : "Approve"}
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                className={
-                                                                    styles.rejectButton
-                                                                }
-                                                                onClick={() =>
-                                                                    handleMembershipDecision(
-                                                                        request
-                                                                            .user
-                                                                            ._id,
-                                                                        "reject"
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    Boolean(
-                                                                        reviewingUserId
-                                                                    )
-                                                                }
-                                                            >
-                                                                Reject
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p
+                                    {group.canManage && (
+                                        <section
                                             className={
-                                                styles.noRequestsMessage
+                                                styles.managerRequestsSection
                                             }
                                         >
-                                            There are no pending membership
-                                            requests.
-                                        </p>
+                                            <h2>
+                                                Pending membership
+                                                requests
+                                            </h2>
+
+                                            {group.pendingRequests
+                                                ?.length >
+                                            0 ? (
+                                                <div
+                                                    className={
+                                                        styles.requestList
+                                                    }
+                                                >
+                                                    {group.pendingRequests.map(
+                                                        (
+                                                            request
+                                                        ) => (
+                                                            <div
+                                                                key={
+                                                                    request
+                                                                        .user
+                                                                        ._id
+                                                                }
+                                                                className={
+                                                                    styles.requestRow
+                                                                }
+                                                            >
+                                                                <div
+                                                                    className={
+                                                                        styles.requestUser
+                                                                    }
+                                                                >
+                                                                    <Link
+                                                                        href={`/profile/${request.user.username}`}
+                                                                    >
+                                                                        {
+                                                                            request
+                                                                                .user
+                                                                                .displayName
+                                                                        }
+                                                                    </Link>
+
+                                                                    <span>
+                                                                        @
+                                                                        {
+                                                                            request
+                                                                                .user
+                                                                                .username
+                                                                        }
+                                                                    </span>
+                                                                </div>
+
+                                                                <div
+                                                                    className={
+                                                                        styles.requestActions
+                                                                    }
+                                                                >
+                                                                    <button
+                                                                        type="button"
+                                                                        className={
+                                                                            styles.approveButton
+                                                                        }
+                                                                        onClick={() =>
+                                                                            handleMembershipDecision(
+                                                                                request
+                                                                                    .user
+                                                                                    ._id,
+                                                                                "approve"
+                                                                            )
+                                                                        }
+                                                                        disabled={Boolean(
+                                                                            reviewingUserId
+                                                                        )}
+                                                                    >
+                                                                        {reviewingUserId ===
+                                                                        request
+                                                                            .user
+                                                                            ._id
+                                                                            ? "Processing..."
+                                                                            : "Approve"}
+                                                                    </button>
+
+                                                                    <button
+                                                                        type="button"
+                                                                        className={
+                                                                            styles.rejectButton
+                                                                        }
+                                                                        onClick={() =>
+                                                                            handleMembershipDecision(
+                                                                                request
+                                                                                    .user
+                                                                                    ._id,
+                                                                                "reject"
+                                                                            )
+                                                                        }
+                                                                        disabled={Boolean(
+                                                                            reviewingUserId
+                                                                        )}
+                                                                    >
+                                                                        Reject
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <p
+                                                    className={
+                                                        styles.noRequestsMessage
+                                                    }
+                                                >
+                                                    There are no pending
+                                                    membership requests.
+                                                </p>
+                                            )}
+                                        </section>
                                     )}
-                                </section>
-                            )}
+                                </aside>
+                            </div>
                         </article>
                     )}
             </main>

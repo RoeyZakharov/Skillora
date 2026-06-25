@@ -154,3 +154,71 @@ export const getFeedPosts = async (
         return next(error);
     }
 };
+
+export const getGroupPosts = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        const group = await Group.findById(
+            req.params.groupId
+        );
+
+        if (!group) {
+            const error = new Error(
+                "Group was not found"
+            );
+
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const currentUserId =
+            req.user._id.toString();
+
+        const isApprovedMember =
+            group.members.some(
+                (member) =>
+                    member.user.toString() ===
+                        currentUserId &&
+                    member.status ===
+                        "approved"
+            );
+
+        if (!isApprovedMember) {
+            const error = new Error(
+                "Only approved group members can view group posts"
+            );
+
+            error.statusCode = 403;
+            throw error;
+        }
+
+        const posts = await Post.find({
+            group: group._id,
+        })
+            .populate(
+                "author",
+                "username displayName avatarUrl"
+            )
+            .populate(
+                "group",
+                "name privacy"
+            )
+            .sort({
+                createdAt: -1,
+            });
+
+        return res.status(200).json({
+            success: true,
+            count: posts.length,
+
+            data: {
+                posts,
+            },
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
