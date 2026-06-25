@@ -7,8 +7,13 @@ import {
 } from "next/navigation";
 
 import {
+    useEffect,
     useState,
 } from "react";
+
+import {
+    getMyNotifications,
+} from "../services/notificationService";
 
 import {
     logoutUser,
@@ -16,7 +21,6 @@ import {
 
 export default function NavigationBar({
     currentUser,
-    invitationCount = 0,
 }) {
     const pathname = usePathname();
 
@@ -25,11 +29,54 @@ export default function NavigationBar({
         setIsLoggingOut,
     ] = useState(false);
 
+    const [
+        notificationCount,
+        setNotificationCount,
+    ] = useState(0);
+
     const profilePath =
         `/profile/${encodeURIComponent(
             currentUser.username
         )}`;
 
+    useEffect(() => {
+        const loadNotificationCount =
+            async () => {
+                try {
+                    const result =
+                        await getMyNotifications();
+
+                    setNotificationCount(
+                        result.unreadCount
+                    );
+                } catch (error) {
+                    console.error(
+                        "Could not load notification count:",
+                        error
+                    );
+                }
+            };
+
+        const handleNotificationsRead =
+            () => {
+                setNotificationCount(0);
+            };
+
+        loadNotificationCount();
+
+        window.addEventListener(
+            "skillora-notifications-read",
+            handleNotificationsRead
+        );
+
+        return () => {
+            window.removeEventListener(
+                "skillora-notifications-read",
+                handleNotificationsRead
+            );
+        };
+    }, []);
+    
     const handleLogout = async () => {
         setIsLoggingOut(true);
 
@@ -101,14 +148,14 @@ export default function NavigationBar({
                     </Link>
 
                     <Link
-                        href="/#invitations"
-                        className="skillora-navigation-link"
+                        href="/notifications"
+                        className="skillora-navigation-link skillora-notifications-link"
                     >
                         Notifications
 
-                        {invitationCount > 0 && (
-                            <span className="skillora-notification-count">
-                                {invitationCount}
+                        {notificationCount  > 0 && (
+                            <span className="skillora-notification-badge">
+                                {notificationCount}
                             </span>
                         )}
                     </Link>

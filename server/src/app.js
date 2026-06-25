@@ -9,6 +9,7 @@ import {
     notFound,
 } from "./middleware/errorHandler.js";
 
+import notificationRoutes from "./routes/notificationRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -60,6 +61,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Ignore automatic browser favicon requests.
 app.get("/favicon.ico", (req, res) => {

@@ -630,3 +630,467 @@ select {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
+
+.skillora-post-management {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skillora-post-management button {
+    padding: 7px 12px;
+    color: #175c3d;
+    background-color: #ffffff;
+    border: 1px solid #26795c;
+    border-radius: 7px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.skillora-post-management button:hover:not(:disabled) {
+    color: #ffffff;
+    background-color: #26795c;
+    transform: translateY(-1px);
+}
+
+.skillora-post-management .skillora-post-delete-button {
+    color: #a32626;
+    border-color: #d45656;
+}
+
+.skillora-post-management
+    .skillora-post-delete-button:hover:not(:disabled) {
+    color: #ffffff;
+    background-color: #c83c3c;
+}
+
+.skillora-post-management button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.skillora-post-edit-form {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skillora-post-edit-form textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 13px;
+    resize: vertical;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-post-edit-form textarea:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+.skillora-post-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.skillora-post-edit-actions button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.skillora-post-edit-actions button:first-child {
+    color: #344054;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+}
+
+.skillora-post-edit-actions button:last-child {
+    color: #ffffff;
+    background-color: #26795c;
+    border: 1px solid #26795c;
+}
+
+.skillora-post-action-error {
+    margin: 14px 0 0;
+    padding: 11px;
+    color: #8c1d1d;
+    background-color: #fdecec;
+    border: 1px solid #e58c8c;
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+    .skillora-post-card-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .skillora-post-management {
+        width: 100%;
+        margin-left: 60px;
+    }
+}
+
+.skillora-post-social-actions {
+    margin-top: 18px;
+    padding-top: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #eaecf0;
+}
+
+.skillora-post-like-button {
+    padding: 7px 14px;
+    color: #26795c;
+    background-color: #ffffff;
+    border: 1px solid #26795c;
+    border-radius: 20px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.skillora-post-like-button:hover:not(:disabled),
+.skillora-post-like-button-active {
+    color: #ffffff;
+    background-color: #26795c;
+}
+
+.skillora-post-like-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.skillora-post-like-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.skillora-post-like-count {
+    color: #667085;
+    font-size: 13px;
+}
+
+.skillora-notifications-page {
+    min-height: calc(100vh - 72px);
+    padding: 32px 20px;
+    background-color: #f5f7f6;
+}
+
+.skillora-notifications-panel {
+    max-width: 820px;
+    margin: 0 auto;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 14px;
+}
+
+.skillora-notifications-header {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-notifications-header h1 {
+    margin: 0;
+    color: #101828;
+    font-size: 26px;
+}
+
+.skillora-notifications-header p {
+    margin: 6px 0 0;
+    color: #667085;
+}
+
+.skillora-notifications-count {
+    padding: 6px 12px;
+    color: #ffffff;
+    background-color: #26795c;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.skillora-notifications-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.skillora-notification-card {
+    padding: 20px 24px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-notification-card:last-child {
+    border-bottom: none;
+}
+
+.skillora-notification-card-unread {
+    background-color: #eef8f3;
+    border-left: 4px solid #26795c;
+}
+
+.skillora-notification-content p {
+    margin: 0;
+    color: #344054;
+    line-height: 1.5;
+}
+
+.skillora-notification-content a {
+    color: #175c3d;
+    text-decoration: none;
+}
+
+.skillora-notification-content a:hover {
+    text-decoration: underline;
+}
+
+.skillora-notification-content blockquote {
+    margin: 14px 0;
+    padding: 12px 14px;
+    color: #475467;
+    background-color: #f9fafb;
+    border-left: 3px solid #98a2b3;
+    border-radius: 6px;
+}
+
+.skillora-notification-footer {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #667085;
+    font-size: 13px;
+}
+
+.skillora-notifications-empty,
+.skillora-notifications-error {
+    margin: 0;
+    padding: 40px 24px;
+    text-align: center;
+}
+
+.skillora-notifications-empty h2 {
+    margin: 0 0 8px;
+    color: #344054;
+}
+
+.skillora-notifications-empty p {
+    margin: 0;
+    color: #667085;
+}
+
+.skillora-notifications-error {
+    color: #a32626;
+}
+
+@media (max-width: 600px) {
+    .skillora-notifications-page {
+        padding: 16px 10px;
+    }
+
+    .skillora-notifications-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .skillora-notification-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+.skillora-notifications-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.skillora-notification-badge {
+    position: static;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+    background-color: #d92d20;
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.skillora-post-comments {
+    margin-top: 18px;
+}
+
+.skillora-post-comments h3 {
+    margin: 0 0 14px;
+    color: #101828;
+    font-size: 18px;
+}
+
+.skillora-post-comments-list {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skillora-post-comment {
+    padding: 12px 14px;
+    background-color: #f5f7f6;
+    border: 1px solid #e1e7e4;
+    border-radius: 10px;
+}
+
+.skillora-post-comment-header {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.skillora-post-comment-header a {
+    color: #175c3d;
+    text-decoration: none;
+}
+
+.skillora-post-comment-header a:hover {
+    text-decoration: underline;
+}
+
+.skillora-post-comment-header time {
+    color: #667085;
+    font-size: 12px;
+}
+
+.skillora-post-comment p {
+    margin: 0;
+    color: #344054;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.skillora-post-comment-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.skillora-post-comment-form textarea {
+    flex: 1;
+    min-height: 70px;
+    padding: 11px 12px;
+    resize: vertical;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-post-comment-form textarea:focus {
+    border-color: #26795c;
+    box-shadow: 0 0 0 3px rgba(38, 121, 92, 0.15);
+}
+
+.skillora-post-comment-form button {
+    padding: 10px 16px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: 1px solid #26795c;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.skillora-post-comment-form button:hover:not(:disabled) {
+    background-color: #175c3d;
+}
+
+.skillora-post-comment-form button:disabled {
+    color: #98a2b3;
+    background-color: #eaecf0;
+    border-color: #d0d5dd;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .skillora-post-comment-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .skillora-post-comment-form button {
+        align-self: flex-end;
+    }
+}
+
+.skillora-post-comment-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.skillora-post-comment-controls button {
+    padding: 4px 9px;
+    color: #a32626;
+    background-color: #ffffff;
+    border: 1px solid #d45656;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.skillora-post-comment-controls button:hover:not(:disabled) {
+    color: #ffffff;
+    background-color: #c83c3c;
+}
+
+.skillora-post-comment-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}

@@ -432,6 +432,34 @@ export default function GroupDetailsPage() {
         );
     };
 
+    const handleGroupPostUpdated = (
+        updatedPost
+    ) => {
+        setGroupPosts(
+            (currentPosts) =>
+                currentPosts.map(
+                    (post) =>
+                        post._id ===
+                        updatedPost._id
+                            ? updatedPost
+                            : post
+                )
+        );
+    };
+
+    const handleGroupPostDeleted = (
+        postId
+    ) => {
+        setGroupPosts(
+            (currentPosts) =>
+                currentPosts.filter(
+                    (post) =>
+                        post._id !==
+                        postId
+                )
+        );
+    };
+
     return (
         <ProtectedPage>
             <main
@@ -896,11 +924,13 @@ export default function GroupDetailsPage() {
                                                                 post
                                                             ) => (
                                                                 <PostCard
-                                                                    key={
-                                                                        post._id
+                                                                    key={post._id}
+                                                                    post={post}
+                                                                    onPostUpdated={
+                                                                        handleGroupPostUpdated
                                                                     }
-                                                                    post={
-                                                                        post
+                                                                    onPostDeleted={
+                                                                        handleGroupPostDeleted
                                                                     }
                                                                 />
                                                             )

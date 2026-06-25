@@ -196,6 +196,29 @@ function HomeContent() {
         );
     };
 
+    const handlePostUpdated = (
+        updatedPost
+    ) => {
+        setPosts((currentPosts) =>
+            currentPosts.map((post) =>
+                post._id === updatedPost._id
+                    ? updatedPost
+                    : post
+            )
+        );
+    };
+
+    const handlePostDeleted = (
+        postId
+    ) => {
+        setPosts((currentPosts) =>
+            currentPosts.filter(
+                (post) =>
+                    post._id !== postId
+            )
+        );
+    };
+
     return (
         <main className="skillora-main-layout">
                 <aside className="skillora-left-column">
@@ -338,6 +361,12 @@ function HomeContent() {
                             <PostCard
                                 key={post._id}
                                 post={post}
+                                onPostUpdated={
+                                    handlePostUpdated
+                                }
+                                onPostDeleted={
+                                    handlePostDeleted
+                                }
                             />
                         ))}
                 </section>

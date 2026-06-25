@@ -64,3 +64,107 @@ export const getGroupPosts = async (
 
     return response.data.posts || [];
 };
+
+export const updatePost = async (
+    postId,
+    content
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                `/api/posts/${encodeURIComponent(
+                    postId
+                )}`,
+            method: "PATCH",
+            data: {
+                content,
+            },
+            headers,
+        });
+
+    return response.data.post;
+};
+
+export const deletePost = async (
+    postId
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    return ajaxRequest({
+        endpoint:
+            `/api/posts/${encodeURIComponent(
+                postId
+            )}`,
+        method: "DELETE",
+        headers,
+    });
+};
+
+export const togglePostLike = async (
+    postId
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                `/api/posts/${encodeURIComponent(
+                    postId
+                )}/like`,
+
+            method: "PATCH",
+            headers,
+        });
+
+    return response.data.post;
+};
+
+export const addPostComment = async (
+    postId,
+    content
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                `/api/posts/${encodeURIComponent(
+                    postId
+                )}/comments`,
+            method: "POST",
+            data: {
+                content,
+            },
+            headers,
+        });
+
+    return response.data.post;
+};
+
+export const deletePostComment = async (
+    postId,
+    commentId
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                `/api/posts/${encodeURIComponent(
+                    postId
+                )}/comments/${encodeURIComponent(
+                    commentId
+                )}`,
+            method: "DELETE",
+            headers,
+        });
+
+    return response.data.post;
+};

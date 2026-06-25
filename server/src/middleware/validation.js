@@ -650,3 +650,42 @@ export const validatePostCreation = (
 
     return next();
 };
+
+export const validatePostUpdate = (
+    req,
+    res,
+    next
+) => {
+    const content =
+        typeof req.body.content ===
+        "string"
+            ? req.body.content.trim()
+            : "";
+
+    const errors = [];
+
+    if (!content) {
+        errors.push(
+            "Post content is required"
+        );
+    }
+
+    if (content.length > 3000) {
+        errors.push(
+            "Post content cannot exceed 3000 characters"
+        );
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Post update validation failed",
+            errors,
+        });
+    }
+
+    req.body.content = content;
+
+    return next();
+};
