@@ -592,3 +592,61 @@ export const validateGroupInvitation = (
 
     return next();
 };
+
+export const validatePostCreation = (
+    req,
+    res,
+    next
+) => {
+    const content =
+        typeof req.body.content ===
+        "string"
+            ? req.body.content.trim()
+            : "";
+
+    const groupId =
+        typeof req.body.groupId ===
+        "string"
+            ? req.body.groupId.trim()
+            : null;
+
+    const errors = [];
+
+    if (!content) {
+        errors.push(
+            "Post content is required"
+        );
+    }
+
+    if (content.length > 3000) {
+        errors.push(
+            "Post content cannot exceed 3000 characters"
+        );
+    }
+
+    if (
+        groupId &&
+        !/^[a-fA-F0-9]{24}$/.test(
+            groupId
+        )
+    ) {
+        errors.push(
+            "Invalid group ID"
+        );
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Post validation failed",
+            errors,
+        });
+    }
+
+    req.body.content = content;
+    req.body.groupId =
+        groupId || null;
+
+    return next();
+};

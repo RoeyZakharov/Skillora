@@ -16,6 +16,12 @@ import {
     requestToJoinGroup,
 } from "../services/groupService";
 
+import PostForm from "../components/PostForm";
+import PostCard from "../components/PostCard";
+import {
+    getFeedPosts,
+} from "../services/postService";
+
 function HomeContent() {
     const { currentUser } =
         useAuthenticatedUser();
@@ -43,6 +49,29 @@ function HomeContent() {
     const [
         invitationActionError,
         setInvitationActionError,
+    ] = useState("");
+
+    const [
+        isPostFormOpen,
+        setIsPostFormOpen,
+    ] = useState(false);
+
+    const [
+        postSuccessMessage,
+        setPostSuccessMessage,
+    ] = useState("");
+
+    const [posts, setPosts] =
+    useState([]);
+
+    const [
+        isLoadingPosts,
+        setIsLoadingPosts,
+    ] = useState(true);
+
+    const [
+        postError,
+        setPostError,
     ] = useState("");
 
     const profilePath =
@@ -83,6 +112,39 @@ function HomeContent() {
 
     }, []);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadFeedPosts = async () => {
+            try {
+                const feedPosts =
+                    await getFeedPosts();
+
+                if (isMounted) {
+                    setPosts(feedPosts);
+                    setPostError("");
+                }
+            } catch (error) {
+                if (isMounted) {
+                    setPostError(
+                        error.message ||
+                            "Could not load your feed."
+                    );
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoadingPosts(false);
+                }
+            }
+        };
+
+        loadFeedPosts();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     const handleRequestToJoin = async (
         groupId
     ) => {
@@ -117,6 +179,21 @@ function HomeContent() {
         } finally {
             setRequestingGroupId("");
         }
+    };
+
+    const handlePostCreated = (
+        newPost
+    ) => {
+        setPosts((currentPosts) => [
+            newPost,
+            ...currentPosts,
+        ]);
+
+        setIsPostFormOpen(false);
+
+        setPostSuccessMessage(
+            "Your post was published successfully."
+        );
     };
 
     return (
@@ -171,7 +248,10 @@ function HomeContent() {
                     <section className="skillora-create-post">
                         <button
                             type="button"
-                            disabled
+                            onClick={() => {
+                                setIsPostFormOpen(true);
+                                setPostSuccessMessage("");
+                            }}
                         >
                             Start a post
                         </button>
@@ -198,25 +278,68 @@ function HomeContent() {
                                 Skill update
                             </button>
                         </div>
+                        {isPostFormOpen && (
+                            <div className="skillora-post-form-container">
+                                <PostForm
+                                    onPostCreated={
+                                        handlePostCreated
+                                    }
+                                    onCancel={() =>
+                                        setIsPostFormOpen(false)
+                                    }
+                                />
+                            </div>
+                        )}
+
+                        {postSuccessMessage && (
+                            <p className="skillora-post-success">
+                                {postSuccessMessage}
+                            </p>
+                        )}
+
                     </section>
 
-                    <section className="skillora-empty-feed">
-                        <h1>
-                            Welcome to your
-                            Skillora feed
-                        </h1>
+                    {isLoadingPosts && (
+                        <section className="skillora-empty-feed">
+                            <p>Loading your feed...</p>
+                        </section>
+                    )}
 
-                        <p>
-                            Posts from your
-                            friends and approved
-                            groups will appear
-                            here.
-                        </p>
+                    {postError && (
+                        <section className="skillora-empty-feed">
+                            <p>{postError}</p>
+                        </section>
+                    )}
 
-                        <Link href="/groups">
-                            Explore groups
-                        </Link>
-                    </section>
+                    {!isLoadingPosts &&
+                        !postError &&
+                        posts.length === 0 && (
+                            <section className="skillora-empty-feed">
+                                <h1>
+                                    Welcome to your Skillora
+                                    feed
+                                </h1>
+
+                                <p>
+                                    Posts from your friends
+                                    and approved groups will
+                                    appear here.
+                                </p>
+
+                                <Link href="/groups">
+                                    Explore groups
+                                </Link>
+                            </section>
+                        )}
+
+                    {!isLoadingPosts &&
+                        !postError &&
+                        posts.map((post) => (
+                            <PostCard
+                                key={post._id}
+                                post={post}
+                            />
+                        ))}
                 </section>
 
                 <aside className="skillora-right-column">
