@@ -156,3 +156,318 @@ select {
         text-align: left;
     }
 }
+
+.skillora-app {
+    min-height: 100vh;
+    background-color: #f3f2ef;
+}
+
+.skillora-navigation {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d0d5dd;
+}
+
+.skillora-navigation-content {
+    width: 100%;
+    max-width: 1180px;
+    min-height: 64px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.skillora-logo {
+    color: #26795c;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.skillora-navigation-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skillora-navigation-link {
+    position: relative;
+    padding: 21px 12px;
+    color: #667085;
+    border-bottom: 3px solid transparent;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.skillora-navigation-link:hover,
+.skillora-navigation-link-active {
+    color: #175c3d;
+    border-bottom-color: #26795c;
+}
+
+.skillora-notification-count {
+    position: absolute;
+    top: 8px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background-color: #c83c3c;
+    border-radius: 20px;
+    font-size: 10px;
+}
+
+.skillora-logout-button {
+    padding: 9px 14px;
+    color: #344054;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.skillora-main-layout {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: grid;
+    grid-template-columns:
+        minmax(210px, 250px)
+        minmax(400px, 570px)
+        minmax(230px, 300px);
+    align-items: start;
+    justify-content: center;
+    gap: 22px;
+}
+
+.skillora-profile-summary,
+.skillora-create-post,
+.skillora-empty-feed,
+.skillora-invitations-card,
+.skillora-discover-card {
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.skillora-profile-cover {
+    height: 75px;
+    background:
+        linear-gradient(
+            135deg,
+            #175c3d,
+            #43a77b
+        );
+}
+
+.skillora-profile-summary-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.skillora-profile-summary-content h2 {
+    margin: 0;
+}
+
+.skillora-profile-summary-content p {
+    color: #667085;
+}
+
+.skillora-side-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    border-top: 1px solid #eaecf0;
+}
+
+.skillora-side-menu a {
+    padding: 12px 18px;
+    color: #344054;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.skillora-side-menu a:hover {
+    color: #175c3d;
+    background-color: #eef6f2;
+}
+
+.skillora-feed-column,
+.skillora-right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skillora-create-post {
+    padding: 16px;
+}
+
+.skillora-create-post > button {
+    width: 100%;
+    padding: 14px 18px;
+    color: #667085;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 30px;
+    text-align: left;
+}
+
+.skillora-create-post-options {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.skillora-create-post-options button {
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    font-weight: 600;
+}
+
+.skillora-empty-feed {
+    padding: 50px 30px;
+    text-align: center;
+}
+
+.skillora-empty-feed h1 {
+    margin-top: 0;
+}
+
+.skillora-empty-feed p {
+    color: #667085;
+}
+
+.skillora-empty-feed a,
+.skillora-discover-card a {
+    color: #26795c;
+    font-weight: 700;
+}
+
+.skillora-invitations-card,
+.skillora-discover-card {
+    padding: 20px;
+}
+
+.skillora-invitations-card h2,
+.skillora-discover-card h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.skillora-invitations-card p,
+.skillora-discover-card p {
+    color: #667085;
+    line-height: 1.5;
+}
+
+@media (max-width: 950px) {
+    .skillora-main-layout {
+        grid-template-columns:
+            minmax(210px, 250px)
+            minmax(0, 1fr);
+    }
+
+    .skillora-right-column {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .skillora-navigation-content {
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    .skillora-navigation-links {
+        width: 100%;
+        order: 3;
+        justify-content: space-between;
+    }
+
+    .skillora-navigation-link {
+        padding: 10px 5px;
+    }
+
+    .skillora-main-layout {
+        grid-template-columns: 1fr;
+        padding: 15px 10px;
+    }
+
+    .skillora-left-column {
+        display: none;
+    }
+}
+
+.skillora-invitation-item {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #eaecf0;
+}
+
+.skillora-invitation-item strong {
+    display: block;
+    color: #1d2939;
+}
+
+.skillora-invitation-item p {
+    margin: 6px 0 10px;
+}
+
+.skillora-invitation-item a {
+    color: #26795c;
+    font-weight: 700;
+}
+
+.skillora-invitation-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.skillora-invitation-actions button {
+    padding: 7px 11px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.skillora-invitation-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.skillora-invitation-error {
+    margin-top: 12px;
+    color: #a32626 !important;
+}
+
+.skillora-pending-badge {
+    padding: 7px 11px;
+    color: #8a5700;
+    background-color: #fff4d6;
+    border: 1px solid #e7c267;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+}
