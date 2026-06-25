@@ -109,3 +109,176 @@
     color: #26795c;
     font-weight: 600;
 }
+
+.formCardWide {
+    width: 100%;
+    max-width: 760px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    box-shadow:
+        0 12px 35px
+        rgba(15, 23, 42, 0.12);
+}
+
+.form select,
+.form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #bcc5d3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form select:focus,
+.form textarea:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+.form textarea {
+    resize: vertical;
+}
+
+.fullWidthField {
+    grid-column: 1 / -1;
+}
+
+.checkboxField {
+    flex-direction: row !important;
+    align-items: center;
+}
+
+.checkboxField input {
+    width: auto;
+}
+
+.groupFormActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.groupCancelButton {
+    color: #344054 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #bcc5d3 !important;
+}
+
+.groupCancelButton:hover:not(:disabled) {
+    background-color: #f2f4f7 !important;
+}
+
+@media (max-width: 600px) {
+    .groupFormActions {
+        flex-direction: column-reverse;
+    }
+
+    .groupFormActions button {
+        width: 100%;
+    }
+}
+
+.searchForm {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.searchForm label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-weight: 600;
+}
+
+.searchForm input,
+.searchForm select {
+    width: 100%;
+    padding: 12px 14px;
+    color: #172033;
+    background-color: #ffffff;
+    border: 1px solid #bcc5d3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.searchForm input:focus,
+.searchForm select:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+.searchForm small {
+    color: #667085;
+    font-weight: 400;
+}
+
+.searchWideField {
+    grid-column: 1 / -1;
+}
+
+.searchActions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.searchActions button {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.searchActions button[type="submit"] {
+    color: #ffffff;
+    background-color: #26795c;
+}
+
+.searchResetButton {
+    color: #344054;
+    background-color: #ffffff;
+    border: 1px solid #bcc5d3 !important;
+}
+
+.searchActions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+@media (max-width: 700px) {
+    .searchForm {
+        grid-template-columns: 1fr;
+    }
+
+    .searchWideField,
+    .searchActions {
+        grid-column: auto;
+    }
+
+    .searchActions {
+        flex-direction: column-reverse;
+    }
+
+    .searchActions button {
+        width: 100%;
+    }
+}
