@@ -53,7 +53,7 @@ const normalizeAuthenticationError = (
     );
 };
 
-const getAuthorizationHeaders = async (
+export const getAuthorizationHeaders = async (
     firebaseUser = null,
     forceRefresh = false
 ) => {

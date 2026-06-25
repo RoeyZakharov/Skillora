@@ -48,9 +48,8 @@ export default function LoginPage() {
                     password
                 );
 
-            router.push(
-                `/profile/${user.username}`
-            );
+            router.replace("/");
+
         } catch (error) {
             setErrorMessage(
                 error.message ||
