@@ -38,6 +38,8 @@ const startServer = async () => {
             },
         });
 
+        app.set("io", io);
+
         configureChatSocket(io);``
 
         httpServer.listen(port, () => {

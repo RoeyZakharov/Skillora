@@ -279,28 +279,6 @@ function HomeContent() {
                             Start a post
                         </button>
 
-                        <div className="skillora-create-post-options">
-                            <button
-                                type="button"
-                                disabled
-                            >
-                                Photo
-                            </button>
-
-                            <button
-                                type="button"
-                                disabled
-                            >
-                                Video
-                            </button>
-
-                            <button
-                                type="button"
-                                disabled
-                            >
-                                Skill update
-                            </button>
-                        </div>
                         {isPostFormOpen && (
                             <div className="skillora-post-form-container">
                                 <PostForm

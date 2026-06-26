@@ -9,6 +9,7 @@ import {
     getGroupPosts,
     togglePostLike,
     updatePost,
+    uploadPostImage,
     uploadPostVideo,
 } from "../controllers/postController.js";
 
@@ -29,10 +30,20 @@ import {
     uploadVideo,
 } from "../middleware/videoUpload.js";
 
+import {
+    uploadImage,
+} from "../middleware/imageUpload.js";
+
 const router = express.Router();
 
 router.use(authentication);
 router.use(requireSkilloraUser);
+
+router.post(
+    "/upload-image",
+    uploadImage.single("image"),
+    uploadPostImage
+);
 
 router.post(
     "/upload-video",

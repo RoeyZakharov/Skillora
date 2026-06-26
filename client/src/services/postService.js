@@ -10,6 +10,7 @@ export const createPost = async ({
     postType = "text",
     mediaUrl = "",
     canvasData = null,
+    attachments = [],
 }) => {
     const headers =
         await getAuthorizationHeaders();
@@ -24,6 +25,7 @@ export const createPost = async ({
                 postType,
                 mediaUrl,
                 canvasData,
+                attachments,
             },
             headers,
         });
@@ -192,4 +194,29 @@ export const uploadPostVideo = async (
         });
 
     return response.data.videoUrl;
+};
+
+export const uploadPostImage = async (
+    imageFile
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const formData = new FormData();
+
+    formData.append(
+        "image",
+        imageFile
+    );
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                "/api/posts/upload-image",
+            method: "POST",
+            data: formData,
+            headers,
+        });
+
+    return response.data.imageUrl;
 };

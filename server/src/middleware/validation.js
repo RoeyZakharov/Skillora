@@ -629,6 +629,13 @@ export const validatePostCreation = (
             ? req.body.canvasData
             : null;
 
+    const rawAttachments =
+        Array.isArray(req.body.attachments)
+            ? req.body.attachments
+            : [];
+
+    const attachments = [];
+
     const errors = [];
 
     if (!content) {
@@ -657,12 +664,14 @@ export const validatePostCreation = (
     if (
         ![
             "text",
+            "image",
             "video",
             "canvas",
+            "mixed",
         ].includes(postType)
     ) {
         errors.push(
-            "Post type must be text, video, or canvas"
+            "Post type must be text, image, video, canvas, or mixed"
         );
     }
 
@@ -705,6 +714,125 @@ export const validatePostCreation = (
         );
     }
 
+    if (rawAttachments.length > 6) {
+        errors.push(
+            "A post cannot contain more than 6 attachments"
+        );
+    }
+
+    for (const attachment of rawAttachments) {
+        if (
+            !attachment ||
+            typeof attachment !== "object"
+        ) {
+            errors.push(
+                "Each attachment must be an object"
+            );
+
+            continue;
+        }
+
+        const type =
+            typeof attachment.type ===
+            "string"
+                ? attachment.type.trim()
+                : "";
+
+        if (
+            ![
+                "image",
+                "video",
+                "canvas",
+            ].includes(type)
+        ) {
+            errors.push(
+                "Attachment type must be image, video, or canvas"
+            );
+
+            continue;
+        }
+
+        if (
+            type === "image" ||
+            type === "video"
+        ) {
+            const url =
+                typeof attachment.url ===
+                "string"
+                    ? attachment.url.trim()
+                    : "";
+
+            if (!url) {
+                errors.push(
+                    `${type} attachment URL is required`
+                );
+
+                continue;
+            }
+
+            try {
+                const parsedUrl =
+                    new URL(url);
+
+                if (
+                    ![
+                        "http:",
+                        "https:",
+                    ].includes(
+                        parsedUrl.protocol
+                    )
+                ) {
+                    errors.push(
+                        `${type} attachment URL must use HTTP or HTTPS`
+                    );
+
+                    continue;
+                }
+            } catch {
+                errors.push(
+                    `${type} attachment URL is invalid`
+                );
+
+                continue;
+            }
+
+            attachments.push({
+                type,
+                url,
+                canvasData: null,
+            });
+        }
+
+        if (type === "canvas") {
+            const attachmentCanvasData =
+                attachment.canvasData;
+
+            if (
+                !attachmentCanvasData ||
+                typeof attachmentCanvasData !==
+                    "object" ||
+                typeof attachmentCanvasData
+                    .imageData !== "string" ||
+                !attachmentCanvasData.imageData.startsWith(
+                    "data:image/"
+                )
+            ) {
+                errors.push(
+                    "Canvas attachment drawing data is invalid"
+                );
+
+                continue;
+            }
+
+            attachments.push({
+                type: "canvas",
+                url: "",
+                canvasData:
+                    attachmentCanvasData,
+            });
+        }
+    }
+
     if (errors.length > 0) {
         return res.status(400).json({
             success: false,
@@ -729,6 +857,9 @@ export const validatePostCreation = (
         postType === "canvas"
             ? canvasData
             : null;
+
+    req.body.attachments =
+        attachments;
 
     return next();
 };

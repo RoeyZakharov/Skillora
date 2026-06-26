@@ -24,6 +24,37 @@ const commentSchema =
         }
     );
 
+const attachmentSchema =
+    new mongoose.Schema(
+        {
+            type: {
+                type: String,
+                enum: [
+                    "image",
+                    "video",
+                    "canvas",
+                ],
+                required: true,
+            },
+
+            url: {
+                type: String,
+                trim: true,
+                default: "",
+            },
+
+            canvasData: {
+                type:
+                    mongoose.Schema.Types
+                        .Mixed,
+                default: null,
+            },
+        },
+        {
+            _id: true,
+        }
+    );
+
 const postSchema = new mongoose.Schema(
     {
         author: {
@@ -55,6 +86,7 @@ const postSchema = new mongoose.Schema(
                 "image",
                 "video",
                 "canvas",
+                "mixed",
             ],
             default: "text",
         },
@@ -68,6 +100,11 @@ const postSchema = new mongoose.Schema(
         canvasData: {
             type: mongoose.Schema.Types.Mixed,
             default: null,
+        },
+
+        attachments: {
+            type: [attachmentSchema],
+            default: [],
         },
 
         likes: [

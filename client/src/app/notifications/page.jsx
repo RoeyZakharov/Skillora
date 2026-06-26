@@ -205,8 +205,16 @@ function NotificationsContent() {
                                                         {notification.type === "post_liked"
                                                             ? "liked your post."
                                                             : notification.type === "post_commented"
-                                                            ? "commented on your post."
-                                                            : "removed your post from a group."}
+                                                                ? "commented on your post."
+                                                                : notification.type === "group_invitation"
+                                                                    ? "invited you to join the group."
+                                                                    : notification.type === "group_join_request"
+                                                                    ? "requested to join your group."
+                                                                    : notification.type === "group_join_approved"
+                                                                        ? "approved your request to join the group."
+                                                                        : notification.type === "group_join_rejected"
+                                                                        ? "rejected your request to join the group."
+                                                                        : "removed your post from a group."}
                                                     </p>
 
                                                     {notification.postExcerpt && (

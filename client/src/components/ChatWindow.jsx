@@ -109,18 +109,38 @@ export default function ChatWindow() {
             setMessages(result.messages);
 
             setConversations(
-                (currentConversations) =>
-                    currentConversations.map(
-                        (conversation) =>
-                            conversation.user
-                                .username ===
-                            result.user.username
-                                ? {
-                                      ...conversation,
-                                      unreadCount: 0,
-                                  }
-                                : conversation
-                    )
+                (currentConversations) => {
+                    const existingConversation =
+                        currentConversations.find(
+                            (conversation) =>
+                                conversation.user
+                                    .username ===
+                                result.user.username
+                        );
+
+                    const latestMessage =
+                        result.messages[
+                            result.messages.length - 1
+                        ] ||
+                        existingConversation?.latestMessage ||
+                        null;
+
+                    const openedConversation = {
+                        user: result.user,
+                        latestMessage,
+                        unreadCount: 0,
+                    };
+
+                    return [
+                        openedConversation,
+                        ...currentConversations.filter(
+                            (conversation) =>
+                                conversation.user
+                                    .username !==
+                                result.user.username
+                        ),
+                    ];
+                }
             );
         } catch (loadError) {
             setError(

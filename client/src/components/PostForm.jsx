@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import {
     createPost,
+    uploadPostImage,
     uploadPostVideo,
 } from "../services/postService";
 
@@ -17,8 +18,23 @@ export default function PostForm({
     const [content, setContent] =
         useState("");
 
-    const [postType, setPostType] =
-        useState("text");
+    const [
+        showImageAttachment,
+        setShowImageAttachment,
+    ] = useState(false);
+
+    const [
+        showVideoAttachment,
+        setShowVideoAttachment,
+    ] = useState(false);
+
+    const [
+        showCanvasAttachment,
+        setShowCanvasAttachment,
+    ] = useState(false);
+
+    const [imageFiles, setImageFiles] =
+        useState([]);
 
     const [mediaUrl, setMediaUrl] =
         useState("");
@@ -26,8 +42,8 @@ export default function PostForm({
     const [videoSource, setVideoSource] =
         useState("url");
 
-    const [videoFile, setVideoFile] =
-        useState(null);
+    const [videoFiles, setVideoFiles] =
+        useState([]);
 
     const [canvasData, setCanvasData] =
         useState(null);
@@ -47,20 +63,30 @@ export default function PostForm({
     ) => {
         event.preventDefault();
 
-        if (
-            postType === "video" &&
-            videoSource === "url" &&
-            !mediaUrl.trim()
-        ) {
+        const normalizedContent =
+            content.trim();
+
+        if (!normalizedContent) {
             setErrorMessage(
-                "Please enter a video URL."
+                "Post content is required."
             );
 
             return;
         }
 
         if (
-            postType === "video" &&
+            showImageAttachment &&
+            imageFiles.length === 0
+        ) {
+            setErrorMessage(
+                "Please select an image file."
+            );
+
+            return;
+        }
+
+        if (
+            showVideoAttachment &&
             videoSource === "file" &&
             !videoFile
         ) {
@@ -71,19 +97,8 @@ export default function PostForm({
             return;
         }
 
-        const normalizedContent =
-            content.trim();
-
-        if (!normalizedContent) {
-            setErrorMessage(
-                "Write something before publishing."
-            );
-
-            return;
-        }
-
         if (
-            postType === "canvas" &&
+            showCanvasAttachment &&
             !canvasData?.imageData
         ) {
             setErrorMessage(
@@ -94,57 +109,93 @@ export default function PostForm({
         }
 
         setIsSubmitting(true);
-        
         setErrorMessage("");
 
         try {
+            const attachments = [];
 
-            let finalMediaUrl =
-                mediaUrl.trim();
-
-            if (
-                postType === "video" &&
-                videoSource === "file"
-            ) {
-                finalMediaUrl =
-                    await uploadPostVideo(
-                        videoFile
+            if (showImageAttachment) {
+                const imageUrls =
+                    await Promise.all(
+                        imageFiles.map((file) =>
+                            uploadPostImage(file)
+                        )
                     );
+
+                attachments.push(
+                    ...imageUrls.map((url) => ({
+                        type: "image",
+                        url,
+                        canvasData: null,
+                    }))
+                );
             }
 
-            const newPost = await createPost({
-                content: normalizedContent,
-                groupId,
-                postType,
+            if (showVideoAttachment) {
+                if (videoSource === "file") {
+                    const videoUrls =
+                        await Promise.all(
+                            videoFiles.map(
+                                (file) =>
+                                    uploadPostVideo(file)
+                            )
+                        );
 
-                mediaUrl:
-                    postType === "video"
-                        ? finalMediaUrl
-                        : "",
+                    attachments.push(
+                        ...videoUrls.map((url) => ({
+                            type: "video",
+                            url,
+                            canvasData: null,
+                        }))
+                    );
+                } else {
+                    attachments.push({
+                        type: "video",
+                        url: mediaUrl.trim(),
+                        canvasData: null,
+                    });
+                }
+            }
 
-                canvasData:
-                    postType === "canvas"
-                        ? canvasData
-                        : null,
-            });
+            if (showCanvasAttachment) {
+                attachments.push({
+                    type: "canvas",
+                    url: "",
+                    canvasData,
+                });
+            }
+
+            const postType =
+                attachments.length === 0
+                    ? "text"
+                    : attachments.length > 1
+                    ? "mixed"
+                    : attachments[0].type;
+
+            const newPost =
+                await createPost({
+                    content:
+                        normalizedContent,
+                    groupId,
+                    postType,
+                    attachments,
+                });
 
             setContent("");
-
-            setPostType("text");
-
+            setShowImageAttachment(false);
+            setShowVideoAttachment(false);
+            setShowCanvasAttachment(false);
+            setImageFiles([]);
             setMediaUrl("");
-
             setVideoSource("url");
-            
-            setVideoFile(null);
-
+            setVideoFiles([]);
             setCanvasData(null);
 
             onPostCreated?.(newPost);
-        } catch (error) {
+        } catch (submitError) {
             setErrorMessage(
-                error.message ||
-                    "Could not publish the post."
+                submitError.message ||
+                    "Could not create the post."
             );
         } finally {
             setIsSubmitting(false);
@@ -160,31 +211,39 @@ export default function PostForm({
                 <button
                     type="button"
                     className={
-                        postType === "text"
+                        showImageAttachment
                             ? "skillora-post-type-button skillora-post-type-button-active"
                             : "skillora-post-type-button"
                     }
                     onClick={() => {
-                        setPostType("text");
-                        setMediaUrl("");
-                        setCanvasData(null);
+                        setShowImageAttachment(
+                            (currentValue) =>
+                                !currentValue
+                        );
+
+                        setImageFiles([]);
                         setErrorMessage("");
                     }}
                     disabled={isSubmitting}
                 >
-                    Text
+                    Photo
                 </button>
 
                 <button
                     type="button"
                     className={
-                        postType === "video"
+                        showVideoAttachment
                             ? "skillora-post-type-button skillora-post-type-button-active"
                             : "skillora-post-type-button"
                     }
                     onClick={() => {
-                        setPostType("video");
-                        setCanvasData(null);
+                        setShowVideoAttachment(
+                            (currentValue) =>
+                                !currentValue
+                        );
+
+                        setMediaUrl("");
+                        setVideoFiles([]);
                         setErrorMessage("");
                     }}
                     disabled={isSubmitting}
@@ -195,14 +254,17 @@ export default function PostForm({
                 <button
                     type="button"
                     className={
-                        postType === "canvas"
+                        showCanvasAttachment
                             ? "skillora-post-type-button skillora-post-type-button-active"
                             : "skillora-post-type-button"
                     }
                     onClick={() => {
-                        setPostType("canvas");
-                        setMediaUrl("");
-                        setVideoFile(null);
+                        setShowCanvasAttachment(
+                            (currentValue) =>
+                                !currentValue
+                        );
+
+                        setCanvasData(null);
                         setErrorMessage("");
                     }}
                     disabled={isSubmitting}
@@ -214,10 +276,7 @@ export default function PostForm({
             <textarea
                 value={content}
                 onChange={(event) => {
-                    setContent(
-                        event.target.value
-                    );
-
+                    setContent(event.target.value);
                     setErrorMessage("");
                 }}
                 placeholder="Share a skill, question or update..."
@@ -227,7 +286,44 @@ export default function PostForm({
                 autoFocus
             />
 
-            {postType === "video" && (
+            {showImageAttachment && (
+                <div className="skillora-post-video-field">
+                    <label htmlFor="post-image-file">
+                        Select an image
+                    </label>
+
+                    <input
+                        id="post-image-file"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        multiple
+                        onChange={(event) => {
+                            const selectedFiles =
+                                Array.from(
+                                    event.target.files || []
+                                );
+
+                            setImageFiles(selectedFiles);
+
+                            setErrorMessage("");
+                        }}
+                        disabled={isSubmitting}
+                        required
+                    />
+
+                    {imageFiles.length > 0 && (
+                        <div className="skillora-selected-video-file">
+                            {imageFiles.map((file) => (
+                                <p key={`${file.name}-${file.lastModified}`}>
+                                    Selected: {file.name}
+                                </p>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {showVideoAttachment && (
                 <div className="skillora-post-video-options">
                     <div className="skillora-video-source-selector">
                         <button
@@ -239,7 +335,7 @@ export default function PostForm({
                             }
                             onClick={() => {
                                 setVideoSource("url");
-                                setVideoFile(null);
+                                setVideoFiles([]);
                                 setErrorMessage("");
                             }}
                             disabled={isSubmitting}
@@ -299,32 +395,37 @@ export default function PostForm({
                                 id="post-video-file"
                                 type="file"
                                 accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                                multiple
                                 onChange={(event) => {
-                                    const selectedFile =
-                                        event.target.files?.[0] ||
-                                        null;
+                                    const selectedFiles =
+                                        Array.from(
+                                            event.target.files || []
+                                        );
 
-                                    setVideoFile(
-                                        selectedFile
-                                    );
-
+                                    setVideoFiles(selectedFiles);
                                     setErrorMessage("");
                                 }}
                                 disabled={isSubmitting}
                                 required
                             />
 
-                            {videoFile && (
-                                <p className="skillora-selected-video-file">
-                                    Selected: {videoFile.name}
-                                </p>
+                            {videoFiles.length > 0 && (
+                                <div className="skillora-selected-video-file">
+                                    {videoFiles.map((file) => (
+                                        <p
+                                            key={`${file.name}-${file.lastModified}`}
+                                        >
+                                            Selected: {file.name}
+                                        </p>
+                                    ))}
+                                </div>
                             )}
                         </div>
                     )}
                 </div>
             )}
 
-            {postType === "canvas" && (
+            {showCanvasAttachment && (
                 <CanvasEditor
                     onChange={setCanvasData}
                 />

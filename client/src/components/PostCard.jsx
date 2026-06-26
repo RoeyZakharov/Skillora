@@ -431,6 +431,69 @@ export default function PostCard({
                 </p>
             )}
 
+            {post.attachments?.map(
+                (attachment, index) => {
+                    const attachmentKey =
+                        attachment._id ||
+                        `${attachment.type}-${index}`;
+
+                    if (
+                        attachment.type === "image" &&
+                        attachment.url
+                    ) {
+                        return (
+                            <div
+                                key={attachmentKey}
+                                className="skillora-post-image"
+                            >
+                                <img
+                                    src={attachment.url}
+                                    alt="Post attachment"
+                                />
+                            </div>
+                        );
+                    }
+
+                    if (
+                        attachment.type === "video" &&
+                        attachment.url
+                    ) {
+                        return (
+                            <VideoPost
+                                key={attachmentKey}
+                                videoUrl={
+                                    attachment.url
+                                }
+                            />
+                        );
+                    }
+
+                    if (
+                        attachment.type === "canvas" &&
+                        attachment.canvasData
+                            ?.imageData
+                    ) {
+                        return (
+                            <div
+                                key={attachmentKey}
+                                className="skillora-canvas-post"
+                            >
+                                <img
+                                    src={
+                                        attachment
+                                            .canvasData
+                                            .imageData
+                                    }
+                                    alt="Canvas drawing"
+                                />
+                            </div>
+                        );
+                    }
+
+                    return null;
+                }
+            )}
+
             {post.postType === "video" &&
                 post.mediaUrl && (
                     <VideoPost

@@ -1,3 +1,4 @@
+import Notification from "../models/Notification.js";
 import Group from "../models/Group.js";
 import User from "../models/User.js";
 
@@ -528,6 +529,67 @@ export const requestToJoinGroup = async (
 
         await group.save();
 
+        const managerRecipientIds =
+            new Set([
+                group.admin.toString(),
+            ]);
+
+        for (const member of group.members) {
+            if (
+                member.status === "approved" &&
+                member.role === "manager"
+            ) {
+                managerRecipientIds.add(
+                    getMemberUserId(member)
+                );
+            }
+        }
+
+        managerRecipientIds.delete(
+            currentUserId
+        );
+
+        if (managerRecipientIds.size > 0) {
+            const requesterName =
+                req.user.displayName ||
+                req.user.username;
+
+            const notifications =
+                await Notification.insertMany(
+                    Array.from(
+                        managerRecipientIds
+                    ).map((recipientId) => ({
+                        recipient: recipientId,
+                        actor: req.user._id,
+                        type:
+                            "group_join_request",
+                        group: group._id,
+
+                        message:
+                            `${requesterName} requested to join ${group.name}.`,
+
+                        isRead: false,
+                    }))
+                );
+
+            const io = req.app.get("io");
+
+            for (const notification of notifications) {
+                io?.to(
+                    `user:${notification.recipient.toString()}`
+                ).emit(
+                    "new_notification",
+                    {
+                        notificationId:
+                            notification._id.toString(),
+
+                        type:
+                            notification.type,
+                    }
+                );
+            }
+        }
+
         await group.populate([
             {
                 path: "admin",
@@ -571,6 +633,10 @@ export const reviewMembershipRequest =
                         member.user.toString() ===
                         req.params.userId
                 );
+
+            const requestingUserId =
+                membership.user?._id ||
+                membership.user;
 
             if (!membership) {
                 const error = new Error(
@@ -616,6 +682,37 @@ export const reviewMembershipRequest =
             }
 
             await req.group.save();
+
+            const requestWasApproved =
+                req.body.decision === "approve";
+
+            const notification =
+                await Notification.create({
+                    recipient: requestingUserId,
+                    actor: req.user._id,
+
+                    type: requestWasApproved
+                        ? "group_join_approved"
+                        : "group_join_rejected",
+
+                    group: req.group._id,
+
+                    message: requestWasApproved
+                        ? `Your request to join ${req.group.name} was approved.`
+                        : `Your request to join ${req.group.name} was rejected.`,
+
+                    isRead: false,
+                });
+
+            const io = req.app.get("io");
+
+            io?.to(
+                `user:${requestingUserId.toString()}`
+            ).emit("new_notification", {
+                notificationId:
+                    notification._id.toString(),
+                type: notification.type,
+            });
 
             await req.group.populate([
                 {
@@ -1101,12 +1198,7 @@ export const inviteUserToGroup = async (
             req.group.members.push({
                 user: invitedUser._id,
                 role: "member",
-                status: {
-                    $in: [
-                        "invited",
-                        "pending",
-                    ],
-                },
+                status: "invited",
                 invitedBy:
                     req.user._id,
                 invitedAt:
@@ -1117,6 +1209,33 @@ export const inviteUserToGroup = async (
         }
 
         await req.group.save();
+
+        const notification =
+            await Notification.create({
+                recipient: invitedUser._id,
+                actor: req.user._id,
+                type: "group_invitation",
+                group: req.group._id,
+
+                message:
+                    `${
+                        req.user.displayName ||
+                        req.user.username
+                    } invited you to join ${req.group.name}.`,
+
+                isRead: false,
+            });
+
+        const io = req.app.get("io");
+
+        io?.to(
+            `user:${invitedUser._id.toString()}`
+        ).emit("new_notification", {
+            notificationId:
+                notification._id.toString(),
+
+            type: notification.type,
+        });
 
         await req.group.populate([
             {

@@ -160,6 +160,7 @@ export const createPost = async (
             postType = "text",
             mediaUrl = "",
             canvasData = null,
+            attachments = [],
         } = req.body;
 
         let group = null;
@@ -213,6 +214,9 @@ export const createPost = async (
                 postType === "canvas"
                     ? canvasData
                     : null,
+            
+            attachments,
+
         });
 
         await post.populate([
@@ -1030,6 +1034,40 @@ export const uploadPostVideo = async (
 
             data: {
                 videoUrl,
+            },
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const uploadPostImage = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        if (!req.file) {
+            const error = new Error(
+                "Image file is required"
+            );
+
+            error.statusCode = 400;
+            throw error;
+        }
+
+        const imageUrl =
+            `${req.protocol}://${req.get(
+                "host"
+            )}/uploads/images/${req.file.filename}`;
+
+        return res.status(201).json({
+            success: true,
+            message:
+                "Image uploaded successfully",
+
+            data: {
+                imageUrl,
             },
         });
     } catch (error) {

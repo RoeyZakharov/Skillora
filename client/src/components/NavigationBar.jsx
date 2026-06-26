@@ -152,6 +152,23 @@ export default function NavigationBar({
             refreshUnreadCount();
         };
 
+        const handleNewNotification =
+            async () => {
+                try {
+                    const result =
+                        await getMyNotifications();
+
+                    setNotificationCount(
+                        result.unreadCount
+                    );
+                } catch (error) {
+                    console.error(
+                        "Could not refresh notifications:",
+                        error
+                    );
+                }
+            };
+
         const startSocketListener =
             async () => {
                 try {
@@ -167,6 +184,11 @@ export default function NavigationBar({
                     socket.on(
                         "receive_message",
                         handleIncomingMessage
+                    );
+
+                    socket.on(
+                        "new_notification",
+                        handleNewNotification
                     );
                 } catch (error) {
                     console.error(
@@ -191,6 +213,11 @@ export default function NavigationBar({
                 activeSocket.off(
                     "receive_message",
                     handleIncomingMessage
+                );
+
+                activeSocket.off(
+                    "new_notification",
+                    handleNewNotification
                 );
             }
 
@@ -264,7 +291,7 @@ export default function NavigationBar({
                     >
                         Notifications
 
-                        {notificationCount  > 0 && (
+                        {notificationCount > 0 && (
                             <span className="skillora-notification-badge">
                                 {notificationCount}
                             </span>
