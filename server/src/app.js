@@ -11,9 +11,11 @@ import {
     notFound,
 } from "./middleware/errorHandler.js";
 
+
 import notificationRoutes from "./routes/notificationRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 
 const app = express();
@@ -71,6 +73,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Ignore automatic browser favicon requests.
 app.get("/favicon.ico", (req, res) => {

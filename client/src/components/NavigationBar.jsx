@@ -19,6 +19,14 @@ import {
     logoutUser,
 } from "../services/userService";
 
+import {
+    getUnreadMessageCount,
+} from "../services/messageService";
+
+import {
+    connectSocket,
+} from "../services/socketService";
+
 export default function NavigationBar({
     currentUser,
 }) {
@@ -32,6 +40,11 @@ export default function NavigationBar({
     const [
         notificationCount,
         setNotificationCount,
+    ] = useState(0);
+
+    const [
+        unreadMessageCount,
+        setUnreadMessageCount,
     ] = useState(0);
 
     const profilePath =
@@ -105,6 +118,89 @@ export default function NavigationBar({
             : "skillora-navigation-link";
     };
 
+    useEffect(() => {
+        let activeSocket = null;
+        let isCancelled = false;
+
+        const refreshUnreadCount =
+            async () => {
+                try {
+                    const count =
+                        await getUnreadMessageCount();
+
+                    if (!isCancelled) {
+                        setUnreadMessageCount(
+                            count
+                        );
+                    }
+                } catch (error) {
+                    console.error(
+                        "Could not load unread message count:",
+                        error
+                    );
+                }
+            };
+
+        const handleIncomingMessage = () => {
+            setUnreadMessageCount(
+                (currentCount) =>
+                    currentCount + 1
+            );
+        };
+
+        const handleMessagesRead = () => {
+            refreshUnreadCount();
+        };
+
+        const startSocketListener =
+            async () => {
+                try {
+                    const socket =
+                        await connectSocket();
+
+                    if (isCancelled) {
+                        return;
+                    }
+
+                    activeSocket = socket;
+
+                    socket.on(
+                        "receive_message",
+                        handleIncomingMessage
+                    );
+                } catch (error) {
+                    console.error(
+                        "Could not connect navigation chat socket:",
+                        error
+                    );
+                }
+            };
+
+        refreshUnreadCount();
+        startSocketListener();
+
+        window.addEventListener(
+            "skillora-messages-read",
+            handleMessagesRead
+        );
+
+        return () => {
+            isCancelled = true;
+
+            if (activeSocket) {
+                activeSocket.off(
+                    "receive_message",
+                    handleIncomingMessage
+                );
+            }
+
+            window.removeEventListener(
+                "skillora-messages-read",
+                handleMessagesRead
+            );
+        };
+    }, []);
+
     return (
         <header className="skillora-navigation">
             <div className="skillora-navigation-content">
@@ -145,6 +241,21 @@ export default function NavigationBar({
                         }
                     >
                         Groups
+                    </Link>
+
+                    <Link
+                        href="/chat"
+                        className={`${linkClassName(
+                            "/chat"
+                        )} skillora-notifications-link`}
+                    >
+                        Chat
+
+                        {unreadMessageCount > 0 && (
+                            <span className="skillora-notification-badge">
+                                {unreadMessageCount}
+                            </span>
+                        )}
                     </Link>
 
                     <Link

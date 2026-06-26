@@ -17,7 +17,7 @@ const firebaseAdminApp =
               credential: applicationDefault(),
           });
 
-const firebaseAuth =
+export const firebaseAuth =
     getAuth(firebaseAdminApp);
 
 export const authentication = async (

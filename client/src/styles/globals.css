@@ -1347,3 +1347,518 @@ select {
     display: block;
     object-fit: contain;
 }
+
+.skillora-chat-page {
+    min-height: calc(100vh - 72px);
+    padding: 32px 20px;
+    background-color: #f5f7f6;
+}
+
+.skillora-chat-panel {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 14px;
+}
+
+.skillora-chat-header {
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-chat-header h1 {
+    margin: 0;
+    color: #101828;
+    font-size: 26px;
+}
+
+.skillora-chat-header p {
+    margin: 6px 0 0;
+    color: #667085;
+}
+
+.skillora-chat-status {
+    padding: 6px 12px;
+    color: #667085;
+    background-color: #f2f4f7;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-chat-status-connected {
+    color: #175c3d;
+    background-color: #dcfae6;
+}
+
+.skillora-chat-window {
+    padding: 24px;
+}
+
+.skillora-chat-recipient {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.skillora-chat-recipient label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-chat-recipient input {
+    width: 100%;
+    padding: 11px 12px;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-chat-recipient input:focus,
+.skillora-chat-form textarea:focus {
+    border-color: #26795c;
+    box-shadow: 0 0 0 3px rgba(38, 121, 92, 0.15);
+}
+
+.skillora-chat-messages {
+    min-height: 280px;
+    max-height: 430px;
+    margin-bottom: 18px;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #f8faf9;
+    border: 1px solid #e1e7e4;
+    border-radius: 10px;
+}
+
+.skillora-chat-empty {
+    margin: auto;
+    color: #667085;
+    text-align: center;
+}
+
+.skillora-chat-message {
+    max-width: 75%;
+    padding: 11px 14px;
+    align-self: flex-start;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.skillora-chat-message strong {
+    color: #175c3d;
+}
+
+.skillora-chat-message span {
+    margin-left: 5px;
+    color: #667085;
+    font-size: 12px;
+}
+
+.skillora-chat-message p {
+    margin: 8px 0;
+    color: #344054;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.skillora-chat-message time {
+    color: #667085;
+    font-size: 11px;
+}
+
+.skillora-chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.skillora-chat-form textarea {
+    flex: 1;
+    min-height: 80px;
+    padding: 11px 12px;
+    resize: vertical;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-chat-form button {
+    padding: 11px 18px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: 1px solid #26795c;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.skillora-chat-form button:hover:not(:disabled) {
+    background-color: #175c3d;
+}
+
+.skillora-chat-form button:disabled {
+    color: #98a2b3;
+    background-color: #eaecf0;
+    border-color: #d0d5dd;
+    cursor: not-allowed;
+}
+
+.skillora-chat-error {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    color: #a32626;
+    background-color: #fdecec;
+    border: 1px solid #e58c8c;
+    border-radius: 8px;
+}
+
+.skillora-chat-connection-message {
+    padding: 40px 24px;
+    color: #667085;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .skillora-chat-page {
+        padding: 16px 10px;
+    }
+
+    .skillora-chat-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .skillora-chat-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .skillora-chat-form button {
+        align-self: flex-end;
+    }
+
+    .skillora-chat-message {
+        max-width: 90%;
+    }
+}
+
+.skillora-messenger {
+    height: 620px;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    overflow: hidden;
+    border-top: 1px solid #eaecf0;
+}
+
+.skillora-messenger-sidebar {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #d0d5dd;
+}
+
+.skillora-messenger-sidebar-header {
+    padding: 20px 16px 14px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-messenger-sidebar-header h2 {
+    margin: 0 0 14px;
+    color: #101828;
+    font-size: 22px;
+}
+
+.skillora-chat-recipient {
+    margin: 0;
+}
+
+.skillora-chat-recipient-search {
+    display: flex;
+    gap: 8px;
+}
+
+.skillora-chat-recipient-search input {
+    min-width: 0;
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #98a2b3;
+    border-radius: 20px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-chat-recipient-search input:focus {
+    border-color: #26795c;
+    box-shadow: 0 0 0 3px rgba(38, 121, 92, 0.15);
+}
+
+.skillora-chat-recipient-search button {
+    padding: 9px 13px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: 1px solid #26795c;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.skillora-chat-recipient-search button:disabled {
+    color: #98a2b3;
+    background-color: #eaecf0;
+    border-color: #d0d5dd;
+    cursor: not-allowed;
+}
+
+.skillora-conversation-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.skillora-conversation-list > p {
+    padding: 20px 16px;
+    color: #667085;
+}
+
+.skillora-conversation-item {
+    width: 100%;
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #f2f4f7;
+    cursor: pointer;
+    text-align: left;
+}
+
+.skillora-conversation-item:hover {
+    background-color: #f5f7f6;
+}
+
+.skillora-conversation-item-active {
+    background-color: #eaf6f1;
+}
+
+.skillora-chat-avatar {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #ffffff;
+    background-color: #26795c;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.skillora-conversation-details {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.skillora-conversation-details strong,
+.skillora-conversation-details small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skillora-conversation-details small {
+    color: #667085;
+}
+
+.skillora-conversation-unread {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background-color: #d92d20;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.skillora-messenger-conversation {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+.skillora-messenger-placeholder {
+    margin: auto;
+    padding: 30px;
+    color: #667085;
+    text-align: center;
+}
+
+.skillora-messenger-placeholder h2 {
+    margin: 0 0 8px;
+    color: #344054;
+}
+
+.skillora-messenger-conversation-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-messenger-conversation-header div {
+    display: flex;
+    flex-direction: column;
+}
+
+.skillora-messenger-conversation-header span {
+    color: #667085;
+    font-size: 13px;
+}
+
+.skillora-messenger-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f8faf9;
+}
+
+.skillora-message-row {
+    display: flex;
+}
+
+.skillora-message-row-incoming {
+    justify-content: flex-start;
+}
+
+.skillora-message-row-outgoing {
+    justify-content: flex-end;
+}
+
+.skillora-message-bubble {
+    max-width: 70%;
+    padding: 10px 13px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 15px;
+}
+
+.skillora-message-row-outgoing .skillora-message-bubble {
+    color: #ffffff;
+    background-color: #26795c;
+    border-color: #26795c;
+}
+
+.skillora-message-bubble p {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.skillora-message-bubble time {
+    margin-top: 5px;
+    display: block;
+    color: #667085;
+    font-size: 10px;
+    text-align: right;
+}
+
+.skillora-message-row-outgoing .skillora-message-bubble time {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.skillora-messenger-composer {
+    padding: 14px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    border-top: 1px solid #eaecf0;
+}
+
+.skillora-messenger-composer textarea {
+    min-height: 44px;
+    max-height: 130px;
+    flex: 1;
+    padding: 11px 13px;
+    resize: vertical;
+    border: 1px solid #98a2b3;
+    border-radius: 20px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-messenger-composer button {
+    padding: 11px 17px;
+    color: #ffffff;
+    background-color: #26795c;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.skillora-messenger-composer button:disabled {
+    color: #98a2b3;
+    background-color: #eaecf0;
+    cursor: not-allowed;
+}
+
+@media (max-width: 750px) {
+    .skillora-messenger {
+        height: auto;
+        min-height: 620px;
+        grid-template-columns: 1fr;
+    }
+
+    .skillora-messenger-sidebar {
+        max-height: 280px;
+        border-right: none;
+        border-bottom: 1px solid #d0d5dd;
+    }
+
+    .skillora-messenger-conversation {
+        min-height: 420px;
+    }
+}
