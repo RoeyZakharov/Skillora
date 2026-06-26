@@ -36,17 +36,31 @@ const ajaxRequest = async ({
     const $ = await loadJQuery();
     const requestMethod = method.toUpperCase();
 
+    const isFormData =
+        typeof FormData !== "undefined" &&
+        data instanceof FormData;
+
     const requestOptions = {
         url: `${API_URL}${endpoint}`,
         method: requestMethod,
         dataType: "json",
         headers,
-        timeout: 10000,
+        timeout: isFormData
+            ? 120000
+            : 10000,
     };
 
     if (data !== null) {
         if (requestMethod === "GET") {
             requestOptions.data = data;
+        } else if (isFormData) {
+            requestOptions.data = data;
+
+            requestOptions.processData =
+                false;
+
+            requestOptions.contentType =
+                false;
         } else {
             requestOptions.data =
                 JSON.stringify(data);

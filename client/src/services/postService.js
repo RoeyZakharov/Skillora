@@ -7,24 +7,22 @@ import {
 export const createPost = async ({
     content,
     groupId = null,
+    postType = "text",
+    mediaUrl = "",
 }) => {
     const headers =
         await getAuthorizationHeaders();
-
-    const requestData = {
-        content,
-    };
-
-    if (groupId) {
-        requestData.groupId =
-            groupId;
-    }
 
     const response =
         await ajaxRequest({
             endpoint: "/api/posts",
             method: "POST",
-            data: requestData,
+            data: {
+                content,
+                groupId,
+                postType,
+                mediaUrl,
+            },
             headers,
         });
 
@@ -167,4 +165,29 @@ export const deletePostComment = async (
         });
 
     return response.data.post;
+};
+
+export const uploadPostVideo = async (
+    videoFile
+) => {
+    const headers =
+        await getAuthorizationHeaders();
+
+    const formData = new FormData();
+
+    formData.append(
+        "video",
+        videoFile
+    );
+
+    const response =
+        await ajaxRequest({
+            endpoint:
+                "/api/posts/upload-video",
+            method: "POST",
+            data: formData,
+            headers,
+        });
+
+    return response.data.videoUrl;
 };

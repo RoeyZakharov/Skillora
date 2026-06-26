@@ -1,5 +1,7 @@
 import "dotenv/config";
 
+import path from "path";
+
 import express from "express";
 import cors from "cors";
 
@@ -39,6 +41,13 @@ app.use(
             "Authorization",
         ],
     })
+);
+
+app.use(
+    "/uploads",
+    express.static(
+        path.resolve("uploads")
+    )
 );
 
 // Parse JSON request bodies.

@@ -610,6 +610,18 @@ export const validatePostCreation = (
             ? req.body.groupId.trim()
             : null;
 
+    const postType =
+        typeof req.body.postType ===
+        "string"
+            ? req.body.postType.trim()
+            : "text";
+
+    const mediaUrl =
+        typeof req.body.mediaUrl ===
+        "string"
+            ? req.body.mediaUrl.trim()
+            : "";
+
     const errors = [];
 
     if (!content) {
@@ -635,6 +647,46 @@ export const validatePostCreation = (
         );
     }
 
+    if (
+        !["text", "video"].includes(
+            postType
+        )
+    ) {
+        errors.push(
+            "Post type must be text or video"
+        );
+    }
+
+    if (postType === "video") {
+        if (!mediaUrl) {
+            errors.push(
+                "Video URL is required"
+            );
+        } else {
+            try {
+                const parsedUrl =
+                    new URL(mediaUrl);
+
+                if (
+                    ![
+                        "http:",
+                        "https:",
+                    ].includes(
+                        parsedUrl.protocol
+                    )
+                ) {
+                    errors.push(
+                        "Video URL must use HTTP or HTTPS"
+                    );
+                }
+            } catch {
+                errors.push(
+                    "Video URL is invalid"
+                );
+            }
+        }
+    }
+
     if (errors.length > 0) {
         return res.status(400).json({
             success: false,
@@ -647,6 +699,11 @@ export const validatePostCreation = (
     req.body.content = content;
     req.body.groupId =
         groupId || null;
+    req.body.postType = postType;
+    req.body.mediaUrl =
+        postType === "video"
+            ? mediaUrl
+            : "";
 
     return next();
 };

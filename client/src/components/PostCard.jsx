@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import VideoPost from "./VideoPost";
 
 import {
     addPostComment,
@@ -429,6 +430,13 @@ export default function PostCard({
                     {post.content}
                 </p>
             )}
+
+            {post.postType === "video" &&
+                post.mediaUrl && (
+                    <VideoPost
+                        videoUrl={post.mediaUrl}
+                    />
+                )}
             
             {post.canLike && (
                 <div className="skillora-post-social-actions">

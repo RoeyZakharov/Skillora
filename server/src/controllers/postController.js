@@ -155,8 +155,10 @@ export const createPost = async (
 ) => {
     try {
         const {
-            content,
-            groupId = null,
+                content,
+                groupId,
+                postType = "text",
+                mediaUrl = "",
         } = req.body;
 
         let group = null;
@@ -199,9 +201,13 @@ export const createPost = async (
 
         const post = await Post.create({
             author: req.user._id,
-            group: group?._id || null,
+            group: groupId || null,
             content,
-            postType: "text",
+            postType,
+            mediaUrl:
+                postType === "video"
+                    ? mediaUrl
+                    : "",
         });
 
         await post.populate([
@@ -985,6 +991,40 @@ export const deletePostComment = async (
                     post,
                     req.user._id
                 ),
+            },
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const uploadPostVideo = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        if (!req.file) {
+            const error = new Error(
+                "Video file is required"
+            );
+
+            error.statusCode = 400;
+            throw error;
+        }
+
+        const videoUrl =
+            `${req.protocol}://${req.get(
+                "host"
+            )}/uploads/videos/${req.file.filename}`;
+
+        return res.status(201).json({
+            success: true,
+            message:
+                "Video uploaded successfully",
+
+            data: {
+                videoUrl,
             },
         });
     } catch (error) {

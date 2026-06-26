@@ -1094,3 +1094,158 @@ select {
     cursor: not-allowed;
     opacity: 0.6;
 }
+
+.skillora-post-type-selector {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.skillora-post-type-button {
+    padding: 7px 15px;
+    color: #475467;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 20px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-post-type-button:hover:not(:disabled) {
+    color: #175c3d;
+    border-color: #26795c;
+}
+
+.skillora-post-type-button-active {
+    color: #ffffff;
+    background-color: #26795c;
+    border-color: #26795c;
+}
+
+.skillora-post-type-button-active:hover:not(:disabled) {
+    color: #ffffff;
+}
+
+.skillora-post-type-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.skillora-post-video-field {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.skillora-post-video-field label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-post-video-field input {
+    width: 100%;
+    padding: 11px 12px;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 9px;
+    outline: none;
+    font: inherit;
+}
+
+.skillora-post-video-field input:focus {
+    border-color: #26795c;
+    box-shadow: 0 0 0 3px rgba(38, 121, 92, 0.15);
+}
+
+.skillora-post-video-field input:disabled {
+    background-color: #f2f4f7;
+    cursor: not-allowed;
+}
+
+.skillora-video-post {
+    width: 100%;
+    margin-top: 14px;
+    overflow: hidden;
+    background-color: #000000;
+    border-radius: 10px;
+    aspect-ratio: 16 / 9;
+}
+
+.skillora-video-post iframe,
+.skillora-video-post video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none;
+    object-fit: contain;
+}
+
+.skillora-post-video-options {
+    margin-top: 12px;
+}
+
+.skillora-video-source-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.skillora-video-source-button {
+    padding: 7px 14px;
+    color: #475467;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-video-source-button:hover:not(:disabled) {
+    color: #175c3d;
+    border-color: #26795c;
+}
+
+.skillora-video-source-button-active {
+    color: #ffffff;
+    background-color: #26795c;
+    border-color: #26795c;
+}
+
+.skillora-video-source-button-active:hover:not(:disabled) {
+    color: #ffffff;
+    background-color: #175c3d;
+}
+
+.skillora-video-source-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.skillora-post-video-field input[type="file"] {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.skillora-post-video-field input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 12px;
+    color: #175c3d;
+    background-color: #eef8f3;
+    border: 1px solid #26795c;
+    border-radius: 7px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.skillora-selected-video-file {
+    margin: 2px 0 0;
+    color: #667085;
+    font-size: 13px;
+}
