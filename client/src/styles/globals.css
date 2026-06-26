@@ -1894,3 +1894,210 @@ select {
     object-fit: contain;
     border-radius: 7px;
 }
+
+.skillora-group-chart {
+    width: 100%;
+    padding: 20px;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.skillora-group-chart h2 {
+    margin: 0 0 18px;
+    color: #101828;
+    font-size: 20px;
+}
+
+.skillora-group-chart > p {
+    margin: 0;
+    padding: 30px 15px;
+    color: #667085;
+    text-align: center;
+}
+
+.skillora-group-chart svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+.skillora-group-chart svg text {
+    fill: #475467;
+    font-size: 12px;
+}
+
+.skillora-group-chart svg path,
+.skillora-group-chart svg line {
+    stroke: #d0d5dd;
+}
+
+.skillora-chart-bar {
+    fill: #26795c;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.skillora-chart-bar:hover {
+    opacity: 0.8;
+}
+
+.skillora-chart-value {
+    fill: #344054 !important;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.skillora-inactive-members {
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.skillora-inactive-members h2 {
+    margin: 0 0 18px;
+    color: #101828;
+    font-size: 20px;
+}
+
+.skillora-inactive-members > p {
+    margin: 0;
+    color: #667085;
+}
+
+.skillora-inactive-members ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.skillora-inactive-members li {
+    padding: 13px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.skillora-inactive-members li:last-child {
+    border-bottom: none;
+}
+
+.skillora-inactive-members li div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.skillora-inactive-members li span {
+    color: #667085;
+    font-size: 13px;
+}
+
+.skillora-inactive-badge {
+    padding: 5px 10px;
+    color: #a32626 !important;
+    background-color: #fdecec;
+    border-radius: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.skillora-statistics-header {
+    margin: 28px 0 24px;
+}
+
+.skillora-statistics-header h1 {
+    margin: 0;
+    color: #101828;
+    font-size: 38px;
+}
+
+.skillora-statistics-header p {
+    margin: 12px 0 0;
+    color: #667085;
+    line-height: 1.5;
+}
+
+.skillora-statistics-controls {
+    margin-bottom: 22px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    background-color: #f8faf9;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.skillora-statistics-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #344054;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.skillora-statistics-controls select {
+    width: 100%;
+    padding: 10px 12px;
+    color: #1d2939;
+    background-color: #ffffff;
+    border: 1px solid #98a2b3;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+}
+
+.skillora-statistics-controls select:focus {
+    border-color: #26795c;
+    box-shadow:
+        0 0 0 3px
+        rgba(38, 121, 92, 0.15);
+}
+
+@media (max-width: 650px) {
+    .skillora-statistics-header h1 {
+        font-size: 28px;
+    }
+
+    .skillora-statistics-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+.skillora-chart-summary {
+    margin: -8px 0 16px;
+    color: #667085;
+    font-size: 14px;
+}
+
+.skillora-activity-bar {
+    fill: #26795c;
+}
+
+.skillora-activity-bar:hover {
+    opacity: 0.8;
+}
+
+.skillora-chart-average-line {
+    stroke: #d97706 !important;
+    stroke-width: 2;
+    stroke-dasharray: 7 5;
+}
+
+.skillora-chart-average-label {
+    fill: #b45309 !important;
+    font-size: 12px;
+    font-weight: 700;
+}

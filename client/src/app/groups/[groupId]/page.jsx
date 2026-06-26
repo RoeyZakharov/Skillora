@@ -970,6 +970,31 @@ export default function GroupDetailsPage() {
                                         styles.groupActionSidebar
                                     }
                                 >
+
+                                    {group.canManage && (
+                                        <section
+                                            className={
+                                                styles.groupStatisticsSection
+                                            }
+                                        >
+                                            <h2>Group statistics</h2>
+
+                                            <p>
+                                                View member activity,
+                                                participation and engagement.
+                                            </p>
+
+                                            <Link
+                                                href={`/groups/${groupId}/statistics`}
+                                                className={
+                                                    styles.groupStatisticsLink
+                                                }
+                                            >
+                                                Open statistics
+                                            </Link>
+                                        </section>
+                                    )}
+
                                     <section
                                         className={
                                             styles.membershipSection

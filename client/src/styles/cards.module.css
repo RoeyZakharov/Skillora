@@ -1511,3 +1511,39 @@
     border: 1px solid #7ac99b;
     border-radius: 8px;
 }
+
+.groupStatisticsSection {
+    padding: 18px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+}
+
+.groupStatisticsSection h2 {
+    margin: 0 0 8px;
+    color: #101828;
+    font-size: 18px;
+}
+
+.groupStatisticsSection p {
+    margin: 0 0 14px;
+    color: #667085;
+    line-height: 1.5;
+}
+
+.groupStatisticsLink {
+    width: 100%;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background-color: #26795c;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.groupStatisticsLink:hover {
+    background-color: #175c3d;
+}
