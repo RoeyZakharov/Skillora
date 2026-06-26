@@ -7,6 +7,8 @@ import {
     uploadPostVideo,
 } from "../services/postService";
 
+import CanvasEditor from "./CanvasEditor";
+
 export default function PostForm({
     groupId = null,
     onPostCreated,
@@ -25,6 +27,9 @@ export default function PostForm({
         useState("url");
 
     const [videoFile, setVideoFile] =
+        useState(null);
+
+    const [canvasData, setCanvasData] =
         useState(null);
 
     const [
@@ -77,7 +82,19 @@ export default function PostForm({
             return;
         }
 
+        if (
+            postType === "canvas" &&
+            !canvasData?.imageData
+        ) {
+            setErrorMessage(
+                "Please draw something on the canvas."
+            );
+
+            return;
+        }
+
         setIsSubmitting(true);
+        
         setErrorMessage("");
 
         try {
@@ -99,10 +116,16 @@ export default function PostForm({
                 content: normalizedContent,
                 groupId,
                 postType,
+
                 mediaUrl:
                     postType === "video"
                         ? finalMediaUrl
                         : "",
+
+                canvasData:
+                    postType === "canvas"
+                        ? canvasData
+                        : null,
             });
 
             setContent("");
@@ -114,6 +137,8 @@ export default function PostForm({
             setVideoSource("url");
             
             setVideoFile(null);
+
+            setCanvasData(null);
 
             onPostCreated?.(newPost);
         } catch (error) {
@@ -142,6 +167,7 @@ export default function PostForm({
                     onClick={() => {
                         setPostType("text");
                         setMediaUrl("");
+                        setCanvasData(null);
                         setErrorMessage("");
                     }}
                     disabled={isSubmitting}
@@ -158,11 +184,30 @@ export default function PostForm({
                     }
                     onClick={() => {
                         setPostType("video");
+                        setCanvasData(null);
                         setErrorMessage("");
                     }}
                     disabled={isSubmitting}
                 >
                     Video
+                </button>
+
+                <button
+                    type="button"
+                    className={
+                        postType === "canvas"
+                            ? "skillora-post-type-button skillora-post-type-button-active"
+                            : "skillora-post-type-button"
+                    }
+                    onClick={() => {
+                        setPostType("canvas");
+                        setMediaUrl("");
+                        setVideoFile(null);
+                        setErrorMessage("");
+                    }}
+                    disabled={isSubmitting}
+                >
+                    Canvas
                 </button>
             </div>
 
@@ -277,6 +322,12 @@ export default function PostForm({
                         </div>
                     )}
                 </div>
+            )}
+
+            {postType === "canvas" && (
+                <CanvasEditor
+                    onChange={setCanvasData}
+                />
             )}
 
             <div className="skillora-post-form-count">

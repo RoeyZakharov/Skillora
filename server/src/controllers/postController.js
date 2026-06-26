@@ -155,10 +155,11 @@ export const createPost = async (
 ) => {
     try {
         const {
-                content,
-                groupId,
-                postType = "text",
-                mediaUrl = "",
+            content,
+            groupId,
+            postType = "text",
+            mediaUrl = "",
+            canvasData = null,
         } = req.body;
 
         let group = null;
@@ -208,6 +209,10 @@ export const createPost = async (
                 postType === "video"
                     ? mediaUrl
                     : "",
+            canvasData:
+                postType === "canvas"
+                    ? canvasData
+                    : null,
         });
 
         await post.populate([

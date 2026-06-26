@@ -438,6 +438,19 @@ export default function PostCard({
                     />
                 )}
             
+            {post.postType === "canvas" &&
+                post.canvasData?.imageData && (
+                    <div className="skillora-canvas-post">
+                        <img
+                            src={
+                                post.canvasData
+                                    .imageData
+                            }
+                            alt="Canvas drawing"
+                        />
+                    </div>
+                )}
+            
             {post.canLike && (
                 <div className="skillora-post-social-actions">
                     <button

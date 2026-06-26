@@ -1249,3 +1249,101 @@ select {
     color: #667085;
     font-size: 13px;
 }
+
+.skillora-canvas-editor {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skillora-canvas-tools {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    background-color: #f5f7f6;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+}
+
+.skillora-canvas-tools label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-canvas-tools input[type="color"] {
+    width: 38px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid #98a2b3;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.skillora-canvas-tools input[type="range"] {
+    width: 130px;
+    cursor: pointer;
+}
+
+.skillora-canvas-tools button {
+    margin-left: auto;
+    padding: 7px 13px;
+    color: #a32626;
+    background-color: #ffffff;
+    border: 1px solid #d45656;
+    border-radius: 7px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.skillora-canvas-tools button:hover {
+    color: #ffffff;
+    background-color: #c83c3c;
+}
+
+.skillora-canvas-editor canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: #ffffff;
+    border: 2px solid #98a2b3;
+    border-radius: 10px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+@media (max-width: 600px) {
+    .skillora-canvas-tools {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .skillora-canvas-tools button {
+        margin-left: 0;
+    }
+}
+
+.skillora-canvas-post {
+    width: 100%;
+    margin-top: 14px;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+}
+
+.skillora-canvas-post img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}

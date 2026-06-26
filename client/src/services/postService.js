@@ -9,6 +9,7 @@ export const createPost = async ({
     groupId = null,
     postType = "text",
     mediaUrl = "",
+    canvasData = null,
 }) => {
     const headers =
         await getAuthorizationHeaders();
@@ -22,6 +23,7 @@ export const createPost = async ({
                 groupId,
                 postType,
                 mediaUrl,
+                canvasData,
             },
             headers,
         });

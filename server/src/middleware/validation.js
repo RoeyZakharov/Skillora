@@ -622,6 +622,13 @@ export const validatePostCreation = (
             ? req.body.mediaUrl.trim()
             : "";
 
+    const canvasData =
+        req.body.canvasData &&
+        typeof req.body.canvasData ===
+            "object"
+            ? req.body.canvasData
+            : null;
+
     const errors = [];
 
     if (!content) {
@@ -648,12 +655,14 @@ export const validatePostCreation = (
     }
 
     if (
-        !["text", "video"].includes(
-            postType
-        )
+        ![
+            "text",
+            "video",
+            "canvas",
+        ].includes(postType)
     ) {
         errors.push(
-            "Post type must be text or video"
+            "Post type must be text, video, or canvas"
         );
     }
 
@@ -687,6 +696,15 @@ export const validatePostCreation = (
         }
     }
 
+    if (
+        postType === "canvas" &&
+        !canvasData
+    ) {
+        errors.push(
+            "Canvas drawing data is required"
+        );
+    }
+
     if (errors.length > 0) {
         return res.status(400).json({
             success: false,
@@ -697,13 +715,20 @@ export const validatePostCreation = (
     }
 
     req.body.content = content;
-    req.body.groupId =
-        groupId || null;
+
+    req.body.groupId = groupId || null;
+
     req.body.postType = postType;
+
     req.body.mediaUrl =
         postType === "video"
             ? mediaUrl
             : "";
+
+    req.body.canvasData =
+        postType === "canvas"
+            ? canvasData
+            : null;
 
     return next();
 };

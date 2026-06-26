@@ -81,10 +81,16 @@ const ajaxRequest = async ({
                     textStatus,
                     errorThrown
                 ) => {
+                    const responseErrors =
+                        jqXHR.responseJSON?.errors;
+
                     const message =
-                        jqXHR.responseJSON?.message ||
-                        errorThrown ||
-                        "The server request failed";
+                        Array.isArray(responseErrors) &&
+                        responseErrors.length > 0
+                            ? responseErrors.join(", ")
+                            : jqXHR.responseJSON?.message ||
+                            errorThrown ||
+                            "The server request failed";
 
                     const error = new Error(message);
 
