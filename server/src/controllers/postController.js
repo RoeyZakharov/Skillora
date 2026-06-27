@@ -22,7 +22,12 @@ const userCanManageGroup = (
         return true;
     }
 
-    return group.members.some(
+    const members =
+        Array.isArray(group.members)
+            ? group.members
+            : [];
+
+    return members.some(
         (member) =>
             getReferenceId(
                 member.user
@@ -228,7 +233,7 @@ export const createPost = async (
             {
                 path: "group",
                 select:
-                    "name privacy admin member",
+                    "name privacy admin members",
             },
             {
                 path: "comments.author",
