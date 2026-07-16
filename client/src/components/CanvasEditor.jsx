@@ -10,6 +10,7 @@ export default function CanvasEditor({
     onChange,
 }) {
     const canvasRef = useRef(null);
+    const hasDrawingRef = useRef(false);
 
     const [isDrawing, setIsDrawing] =
         useState(false);
@@ -38,13 +39,27 @@ export default function CanvasEditor({
             canvas.height
         );
 
+        hasDrawingRef.current = false;
+        onChange?.(null);
+    }, []);
+
+    const exportCanvasData = () => {
+        const canvas = canvasRef.current;
+
+        if (!canvas || !hasDrawingRef.current) {
+            onChange?.(null);
+            return;
+        }
+
         onChange?.({
             imageData:
                 canvas.toDataURL(
                     "image/png"
                 ),
+            width: canvas.width,
+            height: canvas.height,
         });
-    }, [onChange]);
+    };
 
     const getPointerPosition = (
         event
@@ -70,15 +85,42 @@ export default function CanvasEditor({
 
     const startDrawing = (event) => {
         const canvas = canvasRef.current;
+
+        if (!canvas) {
+            return;
+        }
+
         const context =
             canvas.getContext("2d");
 
         const position =
             getPointerPosition(event);
 
-        canvas.setPointerCapture(
+        canvas.setPointerCapture?.(
             event.pointerId
         );
+
+        context.strokeStyle =
+            brushColor;
+
+        context.fillStyle =
+            brushColor;
+
+        context.lineWidth =
+            brushSize;
+
+        context.lineCap = "round";
+        context.lineJoin = "round";
+
+        context.beginPath();
+        context.arc(
+            position.x,
+            position.y,
+            brushSize / 2,
+            0,
+            Math.PI * 2
+        );
+        context.fill();
 
         context.beginPath();
         context.moveTo(
@@ -86,7 +128,9 @@ export default function CanvasEditor({
             position.y
         );
 
+        hasDrawingRef.current = true;
         setIsDrawing(true);
+        exportCanvasData();
     };
 
     const draw = (event) => {
@@ -95,6 +139,11 @@ export default function CanvasEditor({
         }
 
         const canvas = canvasRef.current;
+
+        if (!canvas) {
+            return;
+        }
+
         const context =
             canvas.getContext("2d");
 
@@ -115,30 +164,42 @@ export default function CanvasEditor({
         context.lineCap = "round";
         context.lineJoin = "round";
         context.stroke();
+
+        hasDrawingRef.current = true;
+        exportCanvasData();
     };
 
-    const stopDrawing = () => {
+    const stopDrawing = (event) => {
         if (!isDrawing) {
             return;
         }
 
         const canvas = canvasRef.current;
+
+        if (!canvas) {
+            return;
+        }
+
         const context =
             canvas.getContext("2d");
 
         context.closePath();
         setIsDrawing(false);
 
-        onChange?.({
-            imageData:
-                canvas.toDataURL(
-                    "image/png"
-                ),
-        });
+        canvas.releasePointerCapture?.(
+            event?.pointerId
+        );
+
+        exportCanvasData();
     };
 
     const clearCanvas = () => {
         const canvas = canvasRef.current;
+
+        if (!canvas) {
+            return;
+        }
+
         const context =
             canvas.getContext("2d");
 
@@ -150,12 +211,9 @@ export default function CanvasEditor({
             canvas.height
         );
 
-        onChange?.({
-            imageData:
-                canvas.toDataURL(
-                    "image/png"
-                ),
-        });
+        hasDrawingRef.current = false;
+        setIsDrawing(false);
+        onChange?.(null);
     };
 
     return (
