@@ -88,10 +88,22 @@ export default function PostForm({
         if (
             showVideoAttachment &&
             videoSource === "file" &&
-            !videoFile
+            videoFiles.length === 0
         ) {
             setErrorMessage(
                 "Please select a video file."
+            );
+
+            return;
+        }
+
+        if (
+            showVideoAttachment &&
+            videoSource === "url" &&
+            !mediaUrl.trim()
+        ) {
+            setErrorMessage(
+                "Please enter a video URL."
             );
 
             return;
@@ -157,7 +169,31 @@ export default function PostForm({
                 }
             }
 
-            if (showCanvasAttachment) {
+            /*
+             * Important:
+             * A pure canvas post is stored in the top-level
+             * canvasData field because the backend saves that
+             * field only when postType === "canvas".
+             *
+             * If we also send the same canvas inside attachments,
+             * PostCard can render it twice: once from post.canvasData
+             * and once from post.attachments.
+             *
+             * For mixed posts, the postType is "mixed", so the
+             * backend does not save top-level canvasData. In that
+             * case the canvas must be sent as an attachment.
+             */
+            const hasCanvasAttachment =
+                showCanvasAttachment &&
+                Boolean(canvasData?.imageData);
+
+            const hasOtherAttachments =
+                attachments.length > 0;
+
+            if (
+                hasCanvasAttachment &&
+                hasOtherAttachments
+            ) {
                 attachments.push({
                     type: "canvas",
                     url: "",
@@ -165,12 +201,32 @@ export default function PostForm({
                 });
             }
 
-            const postType =
-                attachments.length === 0
-                    ? "text"
-                    : attachments.length > 1
-                    ? "mixed"
-                    : attachments[0].type;
+            let postType = "text";
+
+            if (
+                hasCanvasAttachment &&
+                !hasOtherAttachments
+            ) {
+                postType = "canvas";
+            } else if (
+                attachments.length > 1
+            ) {
+                postType = "mixed";
+            } else if (
+                attachments.length === 1
+            ) {
+                postType = attachments[0].type;
+            }
+
+            const topLevelCanvasData =
+                postType === "canvas"
+                    ? canvasData
+                    : null;
+
+            const topLevelMediaUrl =
+                postType === "video"
+                    ? attachments[0]?.url || ""
+                    : "";
 
             const newPost =
                 await createPost({
@@ -178,6 +234,10 @@ export default function PostForm({
                         normalizedContent,
                     groupId,
                     postType,
+                    mediaUrl:
+                        topLevelMediaUrl,
+                    canvasData:
+                        topLevelCanvasData,
                     attachments,
                 });
 
